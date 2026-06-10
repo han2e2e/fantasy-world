@@ -23,10 +23,8 @@ export const INITIAL_SCORES = { combat: 0, strategy: 0, survival: 0, modern: 0 }
 
 export const SCORING_GUIDE = [
   '10개 문항의 선택지마다 combat / strategy / survival / modern 중 하나의 점수가 보이지 않게 쌓입니다.',
-  '1등·2등 성향 조합으로 1~16번 직업이 결정됩니다. (예: 1등 Combat + 2등 Strategy → 뇌격자)',
-  '한 성향이 2등보다 3점 이상 높으면 Solo 직업입니다. (4, 8, 12, 16번)',
-  'Combat+Strategy, Combat+Survival, Strategy+Survival이 동점 1등이면 히든 직업입니다. (17~19번)',
-  '전체 동점이거나 위 규칙에 해당하지 않으면 20번 에테르가 나옵니다.',
+  '해당 성향들을 종합적인 성향을 바탕으로 능력을 알 수 있습니다.',
+  '조건 충족시 희귀한 클래스를 얻을 수 있습니다',
 ]
 
 export const ABILITY_RESULTS = {

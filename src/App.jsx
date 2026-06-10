@@ -19,6 +19,31 @@ const SCREENS = {
   WORLDVIEW: 'worldview',
   QUIZ: 'quiz',
   RESULT: 'result',
+  JOB_LIST: 'job_list',
+}
+
+function JobListPanel() {
+  return (
+    <div className="fantasy-guide__jobs">
+      {JOB_LIST.map((job) => (
+        <article key={job.key} className="fantasy-guide__job-card">
+          <div className="fantasy-guide__job-head">
+            <img
+              src={job.image}
+              alt={job.title}
+              className="fantasy-guide__job-thumb"
+            />
+            <div>
+              <p className="fantasy-guide__job-group">{job.group}</p>
+              <h4 className="fantasy-guide__job-title">{job.title}</h4>
+              <p className="fantasy-guide__job-combo">{job.combo}</p>
+            </div>
+          </div>
+          <p className="fantasy-guide__job-desc">{job.desc}</p>
+        </article>
+      ))}
+    </div>
+  )
 }
 
 function App() {
@@ -30,6 +55,7 @@ function App() {
   const [dbError, setDbError] = useState(null)
   const [scores, setScores] = useState(INITIAL_SCORES)
   const [finalResult, setFinalResult] = useState(null)
+  const [hasCompletedQuiz, setHasCompletedQuiz] = useState(false)
   const scoresRef = useRef(INITIAL_SCORES)
 
   useEffect(() => {
@@ -95,6 +121,7 @@ function App() {
     setScores(INITIAL_SCORES)
     setCurrentIdx(0)
     setFinalResult(null)
+    setHasCompletedQuiz(false)
     goToScreen(SCREENS.QUIZ)
   }
 
@@ -120,8 +147,14 @@ function App() {
     } else {
       const jobKey = determineJob(nextScores)
       setFinalResult(getAbilityResult(jobKey))
+      setHasCompletedQuiz(true)
       goToScreen(SCREENS.RESULT)
     }
+  }
+
+  const handleViewJobList = () => {
+    if (!hasCompletedQuiz) return
+    goToScreen(SCREENS.JOB_LIST)
   }
 
   const handleRestart = () => {
@@ -129,6 +162,7 @@ function App() {
     setScores(INITIAL_SCORES)
     setCurrentIdx(0)
     setFinalResult(null)
+    setHasCompletedQuiz(false)
     goToScreen(SCREENS.MAIN)
   }
 
@@ -141,7 +175,7 @@ function App() {
       </div>
 
       <main
-        className={`fantasy-screen ${screen === SCREENS.RESULT ? 'fantasy-screen--wide' : ''} ${isTransitioning ? 'fantasy-screen--fade-out' : 'fantasy-screen--fade-in'}`}
+        className={`fantasy-screen ${screen === SCREENS.RESULT || screen === SCREENS.JOB_LIST ? 'fantasy-screen--wide' : ''} ${isTransitioning ? 'fantasy-screen--fade-out' : 'fantasy-screen--fade-in'}`}
       >
         {screen === SCREENS.MAIN && (
           <section className="fantasy-content">
@@ -162,17 +196,17 @@ function App() {
               className="fantasy-btn fantasy-btn--sub"
               onClick={() => goToScreen(SCREENS.GUIDE)}
             >
-              [ 직업 종류 & 점수 규칙 보기 ]
+              [ 점수 배치 안내 ]
             </button>
           </section>
         )}
 
         {screen === SCREENS.GUIDE && (
           <section className="fantasy-guide">
-            <h2 className="fantasy-guide__title">직업 종류 & 점수 배치 안내</h2>
+            <h2 className="fantasy-guide__title">점수 배치 안내</h2>
 
             <div className="fantasy-guide__section">
-              <h3 className="fantasy-guide__subtitle">점수는 이렇게 쌓입니다</h3>
+              <h3 className="fantasy-guide__subtitle">이세계 규칙</h3>
               <ul className="fantasy-guide__list">
                 {SCORING_GUIDE.map((rule) => (
                   <li key={rule}>{rule}</li>
@@ -180,28 +214,9 @@ function App() {
               </ul>
             </div>
 
-            <div className="fantasy-guide__section">
-              <h3 className="fantasy-guide__subtitle">20가지 직업 목록</h3>
-              <div className="fantasy-guide__jobs">
-                {JOB_LIST.map((job) => (
-                  <article key={job.key} className="fantasy-guide__job-card">
-                    <div className="fantasy-guide__job-head">
-                      <img
-                        src={job.image}
-                        alt={job.title}
-                        className="fantasy-guide__job-thumb"
-                      />
-                      <div>
-                        <p className="fantasy-guide__job-group">{job.group}</p>
-                        <h4 className="fantasy-guide__job-title">{job.title}</h4>
-                        <p className="fantasy-guide__job-combo">{job.combo}</p>
-                      </div>
-                    </div>
-                    <p className="fantasy-guide__job-desc">{job.desc}</p>
-                  </article>
-                ))}
-              </div>
-            </div>
+            <p className="fantasy-guide__locked">
+              20가지 직업 목록은 문답을 모두 마친 뒤 각성 결과 화면에서 확인할 수 있습니다.
+            </p>
 
             <button
               type="button"
@@ -213,6 +228,27 @@ function App() {
           </section>
         )}
 
+        {screen === SCREENS.JOB_LIST && hasCompletedQuiz && (
+          <section className="fantasy-guide">
+            <h2 className="fantasy-guide__title">20가지 직업 목록</h2>
+            <p className="fantasy-guide__unlock-note">
+              각성을 완료한 자만 열람할 수 있는 비밀 직업 도감입니다.
+            </p>
+
+            <div className="fantasy-guide__section">
+              <JobListPanel />
+            </div>
+
+            <button
+              type="button"
+              className="fantasy-btn fantasy-btn--glow"
+              onClick={() => goToScreen(SCREENS.RESULT)}
+            >
+              결과 화면으로 돌아가기
+            </button>
+          </section>
+        )}
+
         {screen === SCREENS.WORLDVIEW && (
           <section className="fantasy-content">
             <p className="fantasy-desc">
@@ -220,7 +256,7 @@ function App() {
               <br />
               이세계에서는 각자마다의 능력이 있다고 한다.
               <br /><br />
-              당신은 지금 그 능력하나로 앞으로의 신분이 정해지는
+              이세계에 소환된 당신은 엄청난 능력을 손에 넣을 수 있게 되었다
               <br />
               <span className="fantasy-desc__highlight">여신의 조각상 앞에 서게 됐다.</span>
               <br /><br />
@@ -275,13 +311,22 @@ function App() {
               <span className="fantasy-result__badge">각성 완료</span>
               <h2 className="fantasy-result__title">{finalResult.title}</h2>
               <p className="fantasy-result__desc">{finalResult.desc}</p>
-              <button
-                type="button"
-                className="fantasy-btn fantasy-btn--glow fantasy-btn--restart"
-                onClick={handleRestart}
-              >
-                다시 각성하기
-              </button>
+              <div className="fantasy-result__actions">
+                <button
+                  type="button"
+                  className="fantasy-btn fantasy-btn--glow fantasy-btn--restart"
+                  onClick={handleRestart}
+                >
+                  다시 각성하기
+                </button>
+                <button
+                  type="button"
+                  className="fantasy-btn fantasy-btn--sub"
+                  onClick={handleViewJobList}
+                >
+                  [ 20가지 직업 목록 보기 ]
+                </button>
+              </div>
             </div>
 
             <div className="fantasy-result__right-image">
