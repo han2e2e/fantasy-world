@@ -22,26 +22,96 @@ const SCREENS = {
   JOB_LIST: 'job_list',
 }
 
-function JobListPanel() {
+const GUIDE_LOCKED_MESSAGE =
+  '20가지 직업 목록은 문답을 모두 마친 뒤 각성 결과 화면에서 확인할 수 있습니다.'
+
+function SlideNavigator({ current, total, onPrev, onNext }) {
   return (
-    <div className="fantasy-guide__jobs">
-      {JOB_LIST.map((job) => (
-        <article key={job.key} className="fantasy-guide__job-card">
-          <div className="fantasy-guide__job-head">
-            <img
-              src={job.image}
-              alt={job.title}
-              className="fantasy-guide__job-thumb"
-            />
-            <div>
-              <p className="fantasy-guide__job-group">{job.group}</p>
-              <h4 className="fantasy-guide__job-title">{job.title}</h4>
-              <p className="fantasy-guide__job-combo">{job.combo}</p>
-            </div>
+    <div className="fantasy-slide-nav">
+      <button
+        type="button"
+        className="fantasy-slide-nav__btn"
+        onClick={onPrev}
+        disabled={current === 0}
+        aria-label="이전 슬라이드"
+      >
+        ‹
+      </button>
+      <span className="fantasy-slide-nav__counter">
+        {current + 1} / {total}
+      </span>
+      <button
+        type="button"
+        className="fantasy-slide-nav__btn"
+        onClick={onNext}
+        disabled={current >= total - 1}
+        aria-label="다음 슬라이드"
+      >
+        ›
+      </button>
+    </div>
+  )
+}
+
+function GuideSlidePanel({ slideIndex, onPrev, onNext }) {
+  const totalSlides = SCORING_GUIDE.length + 1
+  const isLockedSlide = slideIndex === SCORING_GUIDE.length
+
+  return (
+    <div className="fantasy-slide-panel">
+      <div className="fantasy-slide-panel__frame">
+        {!isLockedSlide ? (
+          <article className="fantasy-rule-slide">
+            <span className="fantasy-rule-slide__badge">이세계 규칙</span>
+            <span className="fantasy-rule-slide__number">{slideIndex + 1}</span>
+            <p className="fantasy-rule-slide__text">
+              {SCORING_GUIDE[slideIndex]}
+            </p>
+          </article>
+        ) : (
+          <article className="fantasy-rule-slide fantasy-rule-slide--locked">
+            <span className="fantasy-rule-slide__badge">안내</span>
+            <span className="fantasy-rule-slide__icon" aria-hidden="true">
+              🔒
+            </span>
+            <p className="fantasy-rule-slide__text">{GUIDE_LOCKED_MESSAGE}</p>
+          </article>
+        )}
+      </div>
+      <SlideNavigator
+        current={slideIndex}
+        total={totalSlides}
+        onPrev={onPrev}
+        onNext={onNext}
+      />
+    </div>
+  )
+}
+
+function JobCodexSlidePanel({ slideIndex, onPrev, onNext }) {
+  const job = JOB_LIST[slideIndex]
+
+  return (
+    <div className="fantasy-slide-panel">
+      <div className="fantasy-slide-panel__frame">
+        <article className="fantasy-codex-slide">
+          <div className="fantasy-codex-slide__content">
+            <p className="fantasy-codex-slide__group">{job.group}</p>
+            <h3 className="fantasy-codex-slide__title">{job.title}</h3>
+            <p className="fantasy-codex-slide__combo">{job.combo}</p>
+            <p className="fantasy-codex-slide__desc">{job.desc}</p>
           </div>
-          <p className="fantasy-guide__job-desc">{job.desc}</p>
+          <div className="fantasy-codex-slide__image">
+            <img src={job.image} alt={job.title} />
+          </div>
         </article>
-      ))}
+      </div>
+      <SlideNavigator
+        current={slideIndex}
+        total={JOB_LIST.length}
+        onPrev={onPrev}
+        onNext={onNext}
+      />
     </div>
   )
 }
@@ -56,6 +126,8 @@ function App() {
   const [scores, setScores] = useState(INITIAL_SCORES)
   const [finalResult, setFinalResult] = useState(null)
   const [hasCompletedQuiz, setHasCompletedQuiz] = useState(false)
+  const [guideSlideIdx, setGuideSlideIdx] = useState(0)
+  const [jobSlideIdx, setJobSlideIdx] = useState(0)
   const scoresRef = useRef(INITIAL_SCORES)
 
   useEffect(() => {
@@ -154,7 +226,13 @@ function App() {
 
   const handleViewJobList = () => {
     if (!hasCompletedQuiz) return
+    setJobSlideIdx(0)
     goToScreen(SCREENS.JOB_LIST)
+  }
+
+  const openGuide = () => {
+    setGuideSlideIdx(0)
+    goToScreen(SCREENS.GUIDE)
   }
 
   const handleRestart = () => {
@@ -175,7 +253,7 @@ function App() {
       </div>
 
       <main
-        className={`fantasy-screen ${screen === SCREENS.RESULT || screen === SCREENS.JOB_LIST ? 'fantasy-screen--wide' : ''} ${isTransitioning ? 'fantasy-screen--fade-out' : 'fantasy-screen--fade-in'}`}
+        className={`fantasy-screen ${screen === SCREENS.RESULT || screen === SCREENS.JOB_LIST || screen === SCREENS.GUIDE ? 'fantasy-screen--wide' : ''} ${isTransitioning ? 'fantasy-screen--fade-out' : 'fantasy-screen--fade-in'}`}
       >
         {screen === SCREENS.MAIN && (
           <section className="fantasy-content">
@@ -194,7 +272,7 @@ function App() {
             <button
               type="button"
               className="fantasy-btn fantasy-btn--sub"
-              onClick={() => goToScreen(SCREENS.GUIDE)}
+              onClick={openGuide}
             >
               [ 점수 배치 안내 ]
             </button>
@@ -202,21 +280,19 @@ function App() {
         )}
 
         {screen === SCREENS.GUIDE && (
-          <section className="fantasy-guide">
+          <section className="fantasy-guide fantasy-guide--slide">
             <h2 className="fantasy-guide__title">점수 배치 안내</h2>
+            <p className="fantasy-guide__slide-hint">‹ › 버튼으로 한 장씩 넘겨보세요</p>
 
-            <div className="fantasy-guide__section">
-              <h3 className="fantasy-guide__subtitle">이세계 규칙</h3>
-              <ul className="fantasy-guide__list">
-                {SCORING_GUIDE.map((rule) => (
-                  <li key={rule}>{rule}</li>
-                ))}
-              </ul>
-            </div>
-
-            <p className="fantasy-guide__locked">
-              20가지 직업 목록은 문답을 모두 마친 뒤 각성 결과 화면에서 확인할 수 있습니다.
-            </p>
+            <GuideSlidePanel
+              slideIndex={guideSlideIdx}
+              onPrev={() => setGuideSlideIdx((idx) => Math.max(0, idx - 1))}
+              onNext={() =>
+                setGuideSlideIdx((idx) =>
+                  Math.min(SCORING_GUIDE.length, idx + 1)
+                )
+              }
+            />
 
             <button
               type="button"
@@ -229,15 +305,20 @@ function App() {
         )}
 
         {screen === SCREENS.JOB_LIST && hasCompletedQuiz && (
-          <section className="fantasy-guide">
-            <h2 className="fantasy-guide__title">20가지 직업 목록</h2>
+          <section className="fantasy-guide fantasy-guide--slide">
+            <h2 className="fantasy-guide__title">20가지 직업 도감</h2>
             <p className="fantasy-guide__unlock-note">
               각성을 완료한 자만 열람할 수 있는 비밀 직업 도감입니다.
             </p>
+            <p className="fantasy-guide__slide-hint">‹ › 버튼으로 직업을 넘겨보세요</p>
 
-            <div className="fantasy-guide__section">
-              <JobListPanel />
-            </div>
+            <JobCodexSlidePanel
+              slideIndex={jobSlideIdx}
+              onPrev={() => setJobSlideIdx((idx) => Math.max(0, idx - 1))}
+              onNext={() =>
+                setJobSlideIdx((idx) => Math.min(JOB_LIST.length - 1, idx + 1))
+              }
+            />
 
             <button
               type="button"

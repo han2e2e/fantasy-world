@@ -1,3 +1,29 @@
+/* 판타지 다크 네온 스크롤바 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 10, 25, 0.6);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #00f3ff, #ff007f);
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00f3ff;
+  box-shadow: 0 0 10px #00f3ff;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #00f3ff rgba(15, 10, 25, 0.6);
+}
+
 .fantasy-app {
   position: relative;
   width: 100%;
@@ -219,9 +245,19 @@
   width: 100%;
   max-width: 720px;
   gap: 1.5rem;
-  max-height: 85vh;
-  overflow-y: auto;
   padding: 8px 4px 16px;
+}
+
+.fantasy-guide--slide {
+  max-width: 1000px;
+  gap: 1rem;
+}
+
+.fantasy-guide__slide-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #7a8a9a;
+  letter-spacing: 0.03em;
 }
 
 .fantasy-guide__title {
@@ -315,6 +351,194 @@
   line-height: 1.7;
   color: #b8b8b8;
   word-break: keep-all;
+}
+
+/* 슬라이드 패널 (가이드 / 도감) */
+.fantasy-slide-panel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.fantasy-slide-panel__frame {
+  width: 100%;
+  min-height: 320px;
+  padding: 1.25rem;
+  border-radius: 16px;
+  background: rgba(10, 6, 18, 0.75);
+  border: 1px solid rgba(0, 243, 255, 0.35);
+  box-shadow:
+    0 0 24px rgba(0, 243, 255, 0.12),
+    inset 0 0 30px rgba(255, 0, 127, 0.05);
+}
+
+.fantasy-slide-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.fantasy-slide-nav__btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid #00f3ff;
+  background: rgba(0, 243, 255, 0.08);
+  color: #00f3ff;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.fantasy-slide-nav__btn:hover:not(:disabled) {
+  background: rgba(0, 243, 255, 0.2);
+  box-shadow: 0 0 14px rgba(0, 243, 255, 0.5);
+}
+
+.fantasy-slide-nav__btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  border-color: rgba(0, 243, 255, 0.25);
+}
+
+.fantasy-slide-nav__counter {
+  min-width: 4.5rem;
+  font-size: 0.95rem;
+  color: #ff9a9e;
+  letter-spacing: 0.08em;
+}
+
+.fantasy-rule-slide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 260px;
+  text-align: center;
+  padding: 1rem;
+}
+
+.fantasy-rule-slide__badge {
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: #96e6a1;
+  border: 1px solid rgba(150, 230, 161, 0.45);
+  background: rgba(150, 230, 161, 0.08);
+}
+
+.fantasy-rule-slide__number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #00f3ff;
+  text-shadow: 0 0 12px rgba(0, 243, 255, 0.5);
+}
+
+.fantasy-rule-slide__icon {
+  font-size: 2.2rem;
+}
+
+.fantasy-rule-slide__text {
+  margin: 0;
+  max-width: 520px;
+  font-size: clamp(1rem, 2.5vw, 1.15rem);
+  line-height: 1.85;
+  color: #d8d8e8;
+  word-break: keep-all;
+}
+
+.fantasy-rule-slide--locked .fantasy-rule-slide__text {
+  color: #a8a8b8;
+}
+
+.fantasy-codex-slide {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.fantasy-codex-slide__content {
+  flex: 1.2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  text-align: left;
+  min-width: 0;
+}
+
+.fantasy-codex-slide__group {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #ff9a9e;
+}
+
+.fantasy-codex-slide__title {
+  margin: 0;
+  font-size: clamp(1.1rem, 2.8vw, 1.45rem);
+  color: #fff;
+  line-height: 1.35;
+}
+
+.fantasy-codex-slide__combo {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #00f3ff;
+}
+
+.fantasy-codex-slide__desc {
+  margin: 0;
+  flex: 1;
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 6px;
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: #b8b8c8;
+  word-break: keep-all;
+}
+
+.fantasy-codex-slide__image {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fantasy-codex-slide__image img {
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  border-radius: 12px;
+  border: 2px solid #00f3ff;
+  box-shadow: 0 0 22px rgba(0, 243, 255, 0.35);
+}
+
+@media (max-width: 768px) {
+  .fantasy-codex-slide {
+    flex-direction: column-reverse;
+    align-items: center;
+  }
+
+  .fantasy-codex-slide__content {
+    text-align: center;
+    align-items: center;
+  }
+
+  .fantasy-codex-slide__desc {
+    max-height: 160px;
+  }
+
+  .fantasy-slide-panel__frame {
+    min-height: auto;
+    padding: 1rem;
+  }
 }
 
 .fantasy-screen--wide {
