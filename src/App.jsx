@@ -7,40 +7,217 @@ import {
   applyAnswerScore,
   determineJob,
   getAbilityResult,
-  getQuizOption,
+  getJobTitleClass,
   getQuizType,
+  normalizeQuizList,
+  translateCategory,
 } from './abilityResults'
+import JobTitleDisplay from './components/JobTitleDisplay'
+import MainScreen from './components/MainScreen'
+import QuizScreen from './components/QuizScreen'
+import ResultScreen from './components/ResultScreen'
+import AwakeningOverlay from './components/AwakeningOverlay'
+import { useGameSound } from './hooks/useGameSound'
 import './App.css'
 
 const SCREENS = {
   MAIN: 'main',
   GUIDE: 'guide',
-  WORLDVIEW: 'worldview',
+  GODDESS_INTERVIEW: 'goddess_interview',
   QUIZ: 'quiz',
   RESULT: 'result',
   JOB_LIST: 'job_list',
 }
 
-function formatJobSelectLabel(title) {
-  const dotIndex = title.indexOf('.')
-  if (dotIndex === -1) return title
+function GoddessInterviewPanel({
+  interviewStep,
+  setInterviewStep,
+  onConfirm,
+  loading,
+  dbError,
+}) {
+  return (
+    <section
+      className={`fantasy-goddess-interview ${interviewStep === 'step2' ? 'fantasy-goddess-interview--step2' : ''}`}
+    >
+      {interviewStep === 'step1' && (
+        <div className="goddess-interview__step1-root">
+          <div className="goddess-interview__record-badge">
+            소 환 기 록
+          </div>
 
-  const number = title.slice(0, dotIndex).trim()
-  const name = title.slice(dotIndex + 1).trim()
-  return `${number}번. ${name}`
+          <div className="goddess-interview__opening-lines">
+            <p className="goddess-interview__line goddess-interview__line--dim90">
+              눈을 떴다.
+            </p>
+            <p className="goddess-interview__line goddess-interview__line--dim95">
+              익숙한 천장도, 알던 냄새도 없었다.
+            </p>
+            <p className="goddess-interview__line goddess-interview__line--dim90">
+              여기는... 내가 알던 세계가 아니었다.
+            </p>
+          </div>
+
+          <div className="goddess-interview__lore-block">
+            <p>이세계에서는 단 하나의 이능력이</p>
+            <p>그 사람의</p>
+            <p className="goddess-interview__gold-line">
+              신분도, 계급도, 살아갈 자격마저도
+            </p>
+            <p>결정한다고 했다.</p>
+          </div>
+
+          <div className="goddess-interview__divider-bar" aria-hidden="true" />
+
+          <div className="goddess-interview__statue-block">
+            <p>그리고 나는 지금,</p>
+            <p className="goddess-interview__gold-title">
+              그 모든 것을 결정하는 여신의 조각상
+            </p>
+            <p>앞에 서 있다.</p>
+          </div>
+
+          <button
+            type="button"
+            className="goddess-interview__touch-btn goddess-interview__touch-btn--step1"
+            onClick={() => setInterviewStep('step2')}
+          >
+            여신의 조각상에 손을 갖다 댄다
+          </button>
+        </div>
+      )}
+
+      {interviewStep === 'step2' && (
+        <div className="goddess-interview__step goddess-interview__step--step2">
+          <p className="goddess-interview__goddess-intro">
+            여신이 나에게 말을 걸었다.
+          </p>
+
+          <div className="goddess-interview__dialogue">
+            <span className="goddess-interview__label">— 여신 —</span>
+            <p className="goddess-interview__voice">
+              &ldquo;당신은 어떤 존재입니까?&rdquo;
+            </p>
+          </div>
+
+          <button
+            type="button"
+            className="fantasy-btn fantasy-btn--glow goddess-interview__submit goddess-interview__submit--step2"
+            disabled={loading}
+            onClick={onConfirm}
+          >
+            문답 시작하기
+          </button>
+
+          {dbError && (
+            <p className="fantasy-error">
+              {dbError === 'Invalid API key'
+                ? 'Supabase API 키가 올바르지 않습니다. 대시보드에서 anon public 키를 확인해 주세요.'
+                : `DB 연결 오류: ${dbError}`}
+            </p>
+          )}
+        </div>
+      )}
+    </section>
+  )
 }
 
-function JobCodexContainer({ selectedIdx, onSelectJob, onBack, backLabel }) {
+function RulesGuidePanel({ onBack }) {
+  return (
+    <section className="fantasy-guide fantasy-guide--rules">
+
+      <div className="rules-header">
+        <div className="worldview-divider">
+          <div className="worldview-divider__line" />
+          <span className="worldview-divider__text">이능력 판정 원리</span>
+          <div className="worldview-divider__line" />
+        </div>
+      </div>
+
+      <div className="rules-list">
+
+        <div className="rules-item">
+          <span className="rules-item__number">01</span>
+          <p className="rules-item__text">
+            10개 문항의 선택지마다
+            <em className="rules-em">
+              {' '}
+              {translateCategory('Combat / Strategy / Survival / Modern')}
+              {' '}
+            </em>
+            중 하나의 성향 점수가 누적됩니다.
+          </p>
+        </div>
+
+        <div className="rules-item">
+          <span className="rules-item__number">02</span>
+          <p className="rules-item__text">
+            최종 누적된 성향들의 조합을 바탕으로
+            <em className="rules-em"> 당신만의 이능력</em>이 결정됩니다.
+          </p>
+        </div>
+
+        <div className="rules-item">
+          <span className="rules-item__number">03</span>
+          <p className="rules-item__text">
+            특별한 운명의 조건을 충족할 경우,
+            <em className="rules-em--hidden"> 아주 희귀한 히든 클래스</em>를
+            각성할 수 있습니다.
+          </p>
+        </div>
+
+        <div className="rules-item">
+          <span className="rules-item__number">04</span>
+          <p className="rules-item__text">
+            문답을 마치면 20가지 직업 도감을
+            언제든 자유롭게 열람할 수 있습니다.
+          </p>
+        </div>
+
+      </div>
+
+      <p className="fantasy-guide__unlock-note">
+        여신의 눈은 당신의 본질을 거짓 없이 꿰뚫어 봅니다.
+      </p>
+
+      <button
+        type="button"
+        className="fantasy-btn fantasy-btn--glow"
+        onClick={onBack}
+      >
+        메인으로 돌아가기
+      </button>
+    </section>
+  )
+}
+
+function JobCodexContainer({
+  selectedIdx,
+  onSelectJob,
+  onBack,
+  backLabel,
+  showDetail,
+}) {
   const job = JOB_LIST[selectedIdx]
 
   return (
-    <section className="fantasy-guide-container">
+    <section
+      className={`fantasy-guide-container ${showDetail ? '' : 'fantasy-guide-container--list-only'}`}
+    >
+      {showDetail && (
       <div className="fantasy-guide__main-view">
         <div className="fantasy-guide__info-panel">
-          <span className="fantasy-guide__badge">각성 완료</span>
-          <h2 className="fantasy-guide__title">{job.title}</h2>
+          <span className="fantasy-guide__badge">
+            {'\u2736'} {job.badge} {'\u2736'}
+          </span>
+          <JobTitleDisplay
+            displayName={job.displayName}
+            subName={job.subName}
+            titleClass={getJobTitleClass(job.key)}
+            mainClassName="fantasy-guide__title"
+          />
           <p className="fantasy-guide__combo-sub">
-            {job.group} | {job.combo}
+            {translateCategory(`${job.group} | ${job.combo}`)}
           </p>
           <p className="fantasy-guide__desc">{job.desc}</p>
 
@@ -53,29 +230,42 @@ function JobCodexContainer({ selectedIdx, onSelectJob, onBack, backLabel }) {
           </button>
         </div>
 
-        <div className="fantasy-guide__image-panel">
+        <div
+          className="fantasy-guide__image-panel"
+          data-title-class={getJobTitleClass(job.key)}
+        >
           <img
             src={job.image}
-            alt={job.title}
+            alt={job.displayName}
             className="fantasy-guide__giant-illustration"
           />
         </div>
       </div>
+      )}
 
       <div className="fantasy-guide__quick-selector">
-        <h3 className="fantasy-guide__selector-title">[ 20가지 직업 목록 ]</h3>
+        <h3 className="fantasy-guide__selector-title">20가지 직업 목록</h3>
         <div className="fantasy-guide__buttons-grid">
           {JOB_LIST.map((item, index) => (
-            <button
-              key={item.key}
-              type="button"
-              className={`fantasy-guide__select-btn ${selectedIdx === index ? 'active' : ''}`}
-              onClick={() => onSelectJob(index)}
-            >
-              {formatJobSelectLabel(item.title)}
-            </button>
-          ))}
+              <button
+                key={item.key}
+                type="button"
+                className={`fantasy-guide__select-btn ${showDetail && selectedIdx === index ? 'active' : ''}`}
+                onClick={() => onSelectJob(index)}
+              >
+                {item.displayName}
+              </button>
+            ))}
         </div>
+        {!showDetail && (
+          <button
+            type="button"
+            className="fantasy-btn fantasy-btn--sub fantasy-guide__list-back-btn"
+            onClick={onBack}
+          >
+            {backLabel}
+          </button>
+        )}
       </div>
     </section>
   )
@@ -93,14 +283,50 @@ function App() {
   const [hasCompletedQuiz, setHasCompletedQuiz] = useState(false)
   const [guideIdx, setGuideIdx] = useState(0)
   const [jobIdx, setJobIdx] = useState(0)
+  const [guideShowDetail, setGuideShowDetail] = useState(false)
+  const [jobListShowDetail, setJobListShowDetail] = useState(false)
+  const [isAwakening, setIsAwakening] = useState(false)
+  const [eyeOpen, setEyeOpen] = useState(false)
+  const [userChoices, setUserChoices] = useState([])
+  const [interviewStep, setInterviewStep] = useState('step1')
   const scoresRef = useRef(INITIAL_SCORES)
+  const currentIdxRef = useRef(0)
+  const userChoicesRef = useRef([])
+  const awakeningTimersRef = useRef([])
+  const { playSelectSound, playAwakeningSound } = useGameSound()
+
+  useEffect(() => {
+    currentIdxRef.current = currentIdx
+  }, [currentIdx])
+
+  useEffect(() => {
+    if (isAwakening) {
+      playAwakeningSound()
+    }
+  }, [isAwakening, playAwakeningSound])
+
+  useEffect(() => {
+    if (screen === SCREENS.GUIDE) {
+      setGuideShowDetail(false)
+    }
+    if (screen === SCREENS.JOB_LIST) {
+      setJobListShowDetail(false)
+    }
+  }, [screen])
+
+  useEffect(() => {
+    return () => {
+      awakeningTimersRef.current.forEach(clearTimeout)
+      awakeningTimersRef.current = []
+    }
+  }, [])
 
   useEffect(() => {
     const fetchQuizzes = async () => {
       setLoading(true)
 
       if (!isSupabaseConfigured || !supabase) {
-        setQuizList(FALLBACK_QUIZZES)
+        setQuizList(normalizeQuizList(FALLBACK_QUIZZES))
         setDbError(null)
         setLoading(false)
         return
@@ -114,18 +340,18 @@ function App() {
 
         if (error) {
           setDbError(error.message)
-          setQuizList(FALLBACK_QUIZZES)
+          setQuizList(normalizeQuizList(FALLBACK_QUIZZES))
           console.error('DB 에러:', error.message)
         } else if (!data || data.length === 0) {
           setDbError(null)
-          setQuizList(FALLBACK_QUIZZES)
+          setQuizList(normalizeQuizList(FALLBACK_QUIZZES))
         } else {
           setDbError(null)
-          setQuizList(data)
+          setQuizList(normalizeQuizList(data))
         }
       } catch (err) {
         console.error('연동 에러:', err)
-        setQuizList(FALLBACK_QUIZZES)
+        setQuizList(normalizeQuizList(FALLBACK_QUIZZES))
       } finally {
         setLoading(false)
       }
@@ -141,7 +367,32 @@ function App() {
     }, 500)
   }
 
-  const handleStartQuiz = () => {
+  const resetQuizSession = () => {
+    scoresRef.current = INITIAL_SCORES
+    setScores(INITIAL_SCORES)
+    currentIdxRef.current = 0
+    setCurrentIdx(0)
+    setFinalResult(null)
+    setHasCompletedQuiz(false)
+    setIsAwakening(false)
+    setEyeOpen(false)
+    userChoicesRef.current = []
+    setUserChoices([])
+    awakeningTimersRef.current.forEach(clearTimeout)
+    awakeningTimersRef.current = []
+  }
+
+  const handleOpenGoddessInterview = () => {
+    resetQuizSession()
+    setInterviewStep('step1')
+    goToScreen(SCREENS.GODDESS_INTERVIEW)
+  }
+
+  const handleGoddessConfirm = () => {
+    if (loading) {
+      alert('여신의 부름을 기다리는 중입니다. 잠시 후 다시 시도해 주세요.')
+      return
+    }
     if (dbError) {
       alert(
         dbError === 'Invalid API key'
@@ -154,16 +405,17 @@ function App() {
       alert('아직 등록된 문답이 없습니다. Supabase quizzes 테이블에 데이터를 추가해 주세요.')
       return
     }
-    scoresRef.current = INITIAL_SCORES
-    setScores(INITIAL_SCORES)
-    setCurrentIdx(0)
-    setFinalResult(null)
-    setHasCompletedQuiz(false)
     goToScreen(SCREENS.QUIZ)
   }
 
   const handleAnswer = (optionNumber) => {
-    const currentQuiz = quizList[currentIdx]
+    const quizIndex = currentIdxRef.current
+    const currentQuiz = quizList[quizIndex]
+
+    if (!currentQuiz) return
+
+    playSelectSound()
+
     const nextScores = applyAnswerScore(
       currentQuiz,
       optionNumber,
@@ -179,39 +431,76 @@ function App() {
     scoresRef.current = nextScores
     setScores(nextScores)
 
-    if (currentIdx + 1 < quizList.length) {
-      setCurrentIdx((idx) => idx + 1)
+    const nextChoices = [...userChoicesRef.current, optionNumber]
+    userChoicesRef.current = nextChoices
+    setUserChoices(nextChoices)
+
+    if (quizIndex + 1 < quizList.length) {
+      const nextIdx = quizIndex + 1
+      currentIdxRef.current = nextIdx
+      setCurrentIdx(nextIdx)
     } else {
       const jobKey = determineJob(nextScores)
-      setFinalResult(getAbilityResult(jobKey))
+      const jobResult = getAbilityResult(jobKey)
+      setFinalResult({ key: jobKey, ...jobResult })
       setHasCompletedQuiz(true)
-      goToScreen(SCREENS.RESULT)
+
+      if (isSupabaseConfigured && supabase) {
+        supabase
+          .from('user_responses')
+          .insert({
+            user_name: '',
+            selected_choices: nextChoices,
+            final_scores: nextScores,
+            matched_job: jobResult.displayName,
+          })
+          .select()
+          .then(({ data, error }) => {
+            if (error) {
+              console.error('응답 저장 실패:', error)
+            } else {
+              console.log('응답 저장 성공:', data)
+            }
+          })
+      }
+
+      awakeningTimersRef.current.forEach(clearTimeout)
+      awakeningTimersRef.current = []
+
+      setIsAwakening(true)
+      setEyeOpen(false)
+
+      awakeningTimersRef.current.push(
+        setTimeout(() => setEyeOpen(true), 1500),
+        setTimeout(() => {
+          setIsAwakening(false)
+          setEyeOpen(false)
+          goToScreen(SCREENS.RESULT)
+        }, 3000)
+      )
     }
   }
 
-  const handleViewJobList = () => {
-    if (!hasCompletedQuiz) return
-    setJobIdx(0)
-    goToScreen(SCREENS.JOB_LIST)
+  const handleGuideSelectJob = (index) => {
+    setGuideIdx(index)
+    setGuideShowDetail(true)
   }
 
-  const openGuide = () => {
-    if (!hasCompletedQuiz) {
-      alert('20가지 직업 도감은 문답을 모두 마친 뒤 열람할 수 있습니다.')
-      return
-    }
-    setGuideIdx(0)
-    goToScreen(SCREENS.GUIDE)
+  const handleJobListSelectJob = (index) => {
+    setJobIdx(index)
+    setJobListShowDetail(true)
   }
 
   const handleRestart = () => {
-    scoresRef.current = INITIAL_SCORES
-    setScores(INITIAL_SCORES)
-    setCurrentIdx(0)
-    setFinalResult(null)
-    setHasCompletedQuiz(false)
+    resetQuizSession()
+    setInterviewStep('step1')
     goToScreen(SCREENS.MAIN)
   }
+
+  const activeQuiz =
+    screen === SCREENS.QUIZ && quizList.length > 0
+      ? quizList[currentIdx]
+      : null
 
   return (
     <div className="fantasy-app">
@@ -222,140 +511,79 @@ function App() {
       </div>
 
       <main
-        className={`fantasy-screen ${screen === SCREENS.RESULT || screen === SCREENS.JOB_LIST || screen === SCREENS.GUIDE ? 'fantasy-screen--wide' : ''} ${isTransitioning ? 'fantasy-screen--fade-out' : 'fantasy-screen--fade-in'}`}
+        className={`fantasy-screen ${screen === SCREENS.MAIN ? 'fantasy-screen--main' : ''} ${screen === SCREENS.RESULT || screen === SCREENS.JOB_LIST || screen === SCREENS.GUIDE ? 'fantasy-screen--wide' : ''} ${isTransitioning ? 'fantasy-screen--fade-out' : 'fantasy-screen--fade-in'}`}
       >
         {screen === SCREENS.MAIN && (
-          <section className="fantasy-content">
-            <h1 className="fantasy-logo">
-              태어나자마자 모든 게 결정되는
-              <br />
-              <span className="fantasy-logo__accent">이능력 세계</span>
-            </h1>
-            <button
-              type="button"
-              className="fantasy-btn fantasy-btn--glow"
-              onClick={() => goToScreen(SCREENS.WORLDVIEW)}
-            >
-              [ 능력 개방하기 ]
-            </button>
-            <button
-              type="button"
-              className="fantasy-btn fantasy-btn--sub"
-              onClick={openGuide}
-            >
-              [ 20가지 직업 도감 ]
-            </button>
-          </section>
+          <MainScreen
+            onGoToWorldview={handleOpenGoddessInterview}
+            onGoToGuide={() => goToScreen(SCREENS.GUIDE)}
+          />
+        )}
+
+        {screen === SCREENS.GUIDE && !hasCompletedQuiz && (
+          <RulesGuidePanel onBack={() => goToScreen(SCREENS.MAIN)} />
         )}
 
         {screen === SCREENS.GUIDE && hasCompletedQuiz && JOB_LIST.length > 0 && (
           <JobCodexContainer
             selectedIdx={guideIdx}
-            onSelectJob={setGuideIdx}
-            onBack={() => goToScreen(SCREENS.MAIN)}
+            onSelectJob={handleGuideSelectJob}
+            onBack={() => {
+              setGuideShowDetail(false)
+              goToScreen(SCREENS.MAIN)
+            }}
             backLabel="메인으로 돌아가기"
+            showDetail={guideShowDetail}
           />
         )}
 
         {screen === SCREENS.JOB_LIST && hasCompletedQuiz && JOB_LIST.length > 0 && (
           <JobCodexContainer
             selectedIdx={jobIdx}
-            onSelectJob={setJobIdx}
-            onBack={() => goToScreen(SCREENS.RESULT)}
+            onSelectJob={handleJobListSelectJob}
+            onBack={() => {
+              setJobListShowDetail(false)
+              goToScreen(SCREENS.RESULT)
+            }}
             backLabel="결과 화면으로 돌아가기"
+            showDetail={jobListShowDetail}
           />
         )}
 
-        {screen === SCREENS.WORLDVIEW && (
-          <section className="fantasy-content">
-            <p className="fantasy-desc">
-              눈을 뜨자 알수없는 세계로 눈을떴다.
-              <br />
-              이세계에서는 각자마다의 능력이 있다고 한다.
-              <br /><br />
-              이세계에 소환된 당신은 엄청난 능력을 손에 넣을 수 있게 되었다
-              <br />
-              <span className="fantasy-desc__highlight">여신의 조각상 앞에 서게 됐다.</span>
-              <br /><br />
-              여신과의 대화로 당신은 능력을 개화할수있다.
-              <br />
-              자신을 시험해보자...
-            </p>
-            <button
-              type="button"
-              className="fantasy-btn fantasy-btn--glow"
-              disabled={loading}
-              onClick={handleStartQuiz}
-            >
-              {loading ? '여신의 부름을 기다리는 중...' : '[ 문답 시작하기 ]'}
-            </button>
-            {dbError && (
-              <p className="fantasy-error">
-                {dbError === 'Invalid API key'
-                  ? 'Supabase API 키가 올바르지 않습니다. 대시보드에서 anon public 키를 확인해 주세요.'
-                  : `DB 연결 오류: ${dbError}`}
-              </p>
-            )}
-          </section>
+        {screen === SCREENS.GODDESS_INTERVIEW && (
+          <GoddessInterviewPanel
+            interviewStep={interviewStep}
+            setInterviewStep={setInterviewStep}
+            onConfirm={handleGoddessConfirm}
+            loading={loading}
+            dbError={dbError}
+          />
         )}
 
-        {screen === SCREENS.QUIZ && quizList.length > 0 && (
-          <section className="fantasy-quiz">
-            <span className="fantasy-quiz__label">
-              질문 {quizList[currentIdx].question_number} / {quizList.length}
-            </span>
-            <h2 className="fantasy-quiz__question">
-              {quizList[currentIdx].question}
-            </h2>
-            <div className="fantasy-quiz__options">
-              {[1, 2, 3, 4].map((num) => (
-                <button
-                  key={num}
-                  type="button"
-                  className="fantasy-btn fantasy-btn--glow fantasy-btn--option"
-                  onClick={() => handleAnswer(num)}
-                >
-                  {num}. {getQuizOption(quizList[currentIdx], num)}
-                </button>
-              ))}
-            </div>
-          </section>
+        {activeQuiz && !isAwakening && (
+          <QuizScreen
+            quiz={activeQuiz}
+            currentIdx={currentIdx}
+            totalCount={quizList.length}
+            onAnswer={handleAnswer}
+          />
         )}
 
         {screen === SCREENS.RESULT && finalResult && (
-          <section className="fantasy-result-layout">
-            <div className="fantasy-result__left-content">
-              <span className="fantasy-result__badge">각성 완료</span>
-              <h2 className="fantasy-result__title">{finalResult.title}</h2>
-              <p className="fantasy-result__desc">{finalResult.desc}</p>
-              <div className="fantasy-result__actions">
-                <button
-                  type="button"
-                  className="fantasy-btn fantasy-btn--glow fantasy-btn--restart"
-                  onClick={handleRestart}
-                >
-                  다시 각성하기
-                </button>
-                <button
-                  type="button"
-                  className="fantasy-btn fantasy-btn--sub"
-                  onClick={handleViewJobList}
-                >
-                  [ 20가지 직업 목록 보기 ]
-                </button>
-              </div>
-            </div>
-
-            <div className="fantasy-result__right-image">
-              <img
-                src={finalResult.image}
-                alt={finalResult.title}
-                className="fantasy-result__illustration"
-              />
-            </div>
-          </section>
+          <ResultScreen
+            result={finalResult}
+            onRestart={handleRestart}
+          />
         )}
       </main>
+
+      {isAwakening && <AwakeningOverlay eyeOpen={eyeOpen} />}
+
+      {screen === SCREENS.MAIN && (
+        <p className="fantasy-author-credit" aria-label="제작자 크레딧">
+          기획 · 개발 이한
+        </p>
+      )}
     </div>
   )
 }

@@ -1,0 +1,127 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&display=swap');
+.title-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  gap: 0;
+}
+.sub-line {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 18px;
+  font-weight: 300;
+  letter-spacing: 0.35em;
+  background: linear-gradient(180deg, #e8c96a 0%, #a07820 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+  opacity: 0.9;
+}
+.divider-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  width: 100%;
+  max-width: 480px;
+}
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #c8921a, transparent);
+}
+.divider-diamond {
+  width: 6px;
+  height: 6px;
+  background: #f5c842;
+  transform: rotate(45deg);
+}
+.main-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 52px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  background: linear-gradient(180deg,
+    #fff9e6 0%,
+    #f5c842 25%,
+    #d4950f 55%,
+    #8b5e0a 80%,
+    #5a3a00 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 6px;
+  text-align: center;
+}
+.main-title-stroke {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 52px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(200, 146, 26, 0.3);
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  text-align: center;
+  pointer-events: none;
+}
+.main-title-wrap {
+  position: relative;
+  margin-bottom: 6px;
+}
+.divider-bottom {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  margin-bottom: 16px;
+  width: 100%;
+  max-width: 480px;
+}
+.ability-tag {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.5em;
+  color: #9d6ecf;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+.eng-sub {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 0.6em;
+  background: linear-gradient(90deg, #c8921a, #f5c842, #c8921a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  opacity: 0.6;
+  margin-top: 4px;
+}
+</style>
+<div class="title-wrap">
+  <p class="sub-line">태어나자마자 모든 게 결정되는</p>
+  <div class="divider-top">
+    <div class="divider-line"></div>
+    <div class="divider-diamond"></div>
+    <div class="divider-line"></div>
+  </div>
+  <div class="main-title-wrap">
+    <div class="main-title">이능력 세계</div>
+  </div>
+  <div class="divider-bottom">
+    <div class="divider-line"></div>
+    <div class="divider-diamond"></div>
+    <div class="divider-line"></div>
+  </div>
+  <p class="ability-tag">ability &nbsp;·&nbsp; world &nbsp;·&nbsp; RPG</p>
+  <p class="eng-sub">where destiny is written at birth</p>
+</div>
