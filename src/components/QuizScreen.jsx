@@ -4,6 +4,23 @@ function stripLastQuestionPrefix(text) {
   return text.replace(/^마지막\s*질문입니다[.\s]*/u, '').trim()
 }
 
+// "상황 설명. 질문?" 구조를 첫 문장 경계에서 두 줄로 분리
+function renderQuestionLines(text) {
+  const clean = String(text ?? '').trim()
+  const boundary = clean.indexOf('. ')
+  if (boundary === -1) return clean
+
+  const first = clean.slice(0, boundary + 1)
+  const second = clean.slice(boundary + 2).trim()
+  return (
+    <>
+      {first}
+      <br />
+      {second}
+    </>
+  )
+}
+
 function QuizScreen({ quiz, currentIdx, totalCount, onAnswer }) {
   const isLastQuestion = currentIdx === totalCount - 1
   const displayQuestion = isLastQuestion
@@ -23,12 +40,14 @@ function QuizScreen({ quiz, currentIdx, totalCount, onAnswer }) {
       </div>
 
       <span className="fantasy-quiz__label">
-        — 제 {quiz.question_number} 문답 —
+        ㅡ 제 {quiz.question_number} 문답 ㅡ
       </span>
       {isLastQuestion && (
         <p className="fantasy-quiz__last-notice">마지막 질문입니다</p>
       )}
-      <h2 className="fantasy-quiz__question">{displayQuestion}</h2>
+      <h2 className="fantasy-quiz__question">
+        {renderQuestionLines(displayQuestion)}
+      </h2>
       <div className="fantasy-quiz__options">
         {[1, 2, 3, 4].map((num) => (
           <button

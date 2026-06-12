@@ -8,16 +8,84 @@ import {
 import { supabase, isSupabaseConfigured } from '../supabaseClient'
 import JobTitleDisplay from './JobTitleDisplay'
 
-function ResultScreen({ result, onRestart }) {
+const REVIEWS_PER_PAGE = 5
+const MY_REVIEWS_STORAGE_KEY = 'isekai_guestbook_my_ids'
+
+function readMyReviewIds() {
+  try {
+    const raw = localStorage.getItem(MY_REVIEWS_STORAGE_KEY)
+    const parsed = raw ? JSON.parse(raw) : []
+    return Array.isArray(parsed) ? parsed : []
+  } catch {
+    return []
+  }
+}
+
+// 긴 성향 설명을 의미 단위(문장)로 모아 2~3개 문단으로 분리
+function splitIntoParagraphs(text, target = 3) {
+  const clean = String(text ?? '').trim()
+  if (!clean) return []
+
+  const sentences = clean.match(/[^.]+\.(?:\s|$)/g)
+  if (!sentences || sentences.length <= 1) return [clean]
+
+  const trimmed = sentences.map((sentence) => sentence.trim())
+  const size = Math.ceil(trimmed.length / target)
+  const paragraphs = []
+  for (let i = 0; i < trimmed.length; i += size) {
+    paragraphs.push(trimmed.slice(i, i + size).join(' '))
+  }
+  return paragraphs
+}
+
+// 작은따옴표로 감싼 핵심 키워드('압도적인 실행력' 등)를 강조 처리
+function renderWithEmphasis(paragraph) {
+  return paragraph.split(/('[^']+')/g).map((part, index) => {
+    if (/^'[^']+'$/.test(part)) {
+      return (
+        <strong key={index} className="fantasy-result__keyword">
+          {part}
+        </strong>
+      )
+    }
+    return <span key={index}>{part}</span>
+  })
+}
+
+function ResultScreen({ result, onRestart, responseId = null }) {
   const [viewResult, setViewResult] = useState(result)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isJobListModalOpen, setIsJobListModalOpen] = useState(false)
-  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false)
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
   const [reviews, setReviews] = useState([])
-  const [nickname, setNickname] = useState('')
   const [comment, setComment] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [hasSubmittedReview, setHasSubmittedReview] = useState(false)
+  const [myReviewIds, setMyReviewIds] = useState(readMyReviewIds)
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const reviewerName = result.displayName
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(MY_REVIEWS_STORAGE_KEY, JSON.stringify(myReviewIds))
+    } catch {
+      // localStorage 사용 불가 환경은 조용히 무시
+    }
+  }, [myReviewIds])
+
+  // 👑개발자 글은 상단 고정 박스로 분리, 목록은 일반 유저 후기만 페이지네이션
+  const userReviews = reviews.filter((review) => review.nickname !== '👑개발자')
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(userReviews.length / REVIEWS_PER_PAGE)
+  )
+  const safePage = Math.min(currentPage, totalPages)
+  const pagedReviews = userReviews.slice(
+    (safePage - 1) * REVIEWS_PER_PAGE,
+    safePage * REVIEWS_PER_PAGE
+  )
 
   useEffect(() => {
     setViewResult(result)
@@ -26,8 +94,7 @@ function ResultScreen({ result, onRestart }) {
   const titleClass = getJobTitleClass(viewResult.key)
   const abilityText = viewResult.abilityDesc ?? viewResult.desc
   const jobImageSrc = getJobImageSrc(viewResult.detailKey, viewResult.image)
-  const isAnyModalOpen =
-    isModalOpen || isJobListModalOpen || isCommentModalOpen || isReviewModalOpen
+  const isAnyModalOpen = isModalOpen || isJobListModalOpen || isReviewModalOpen
 
   const handleJobSelect = (job) => {
     setViewResult({ key: job.key, ...job })
@@ -55,11 +122,16 @@ function ResultScreen({ result, onRestart }) {
 
   useEffect(() => {
     if (!isReviewModalOpen) return
+    setCurrentPage(1)
     fetchReviews()
   }, [isReviewModalOpen])
 
+  useEffect(() => {
+    setCurrentPage((page) => Math.min(page, totalPages))
+  }, [totalPages])
+
   const handleSubmitReview = async () => {
-    if (isSubmitting) return
+    if (isSubmitting || hasSubmittedReview) return
     const trimmedComment = comment.trim()
     if (!trimmedComment) {
       alert('한 줄 후기를 입력해 주세요.')
@@ -70,13 +142,20 @@ function ResultScreen({ result, onRestart }) {
       return
     }
 
-    const finalNickname = nickname.trim() || 'ㅇㅇ'
     setIsSubmitting(true)
 
-    const { error } = await supabase.from('guestbook').insert({
-      nickname: finalNickname,
+    const reviewRow = {
+      nickname: reviewerName,
       comment: trimmedComment,
-    })
+    }
+    if (responseId != null) {
+      reviewRow.user_response_id = responseId
+    }
+
+    const { data, error } = await supabase
+      .from('guestbook')
+      .insert(reviewRow)
+      .select()
 
     setIsSubmitting(false)
 
@@ -86,9 +165,34 @@ function ResultScreen({ result, onRestart }) {
       return
     }
 
-    setNickname('')
+    const newId = data?.[0]?.id
+    if (newId != null) {
+      setMyReviewIds((prev) => [...prev, newId])
+    }
+
     setComment('')
+    setHasSubmittedReview(true)
     fetchReviews()
+  }
+
+  const handleDeleteReview = async (reviewId) => {
+    if (!myReviewIds.includes(reviewId)) return
+    if (!isSupabaseConfigured || !supabase) return
+
+    const { error } = await supabase
+      .from('guestbook')
+      .delete()
+      .eq('id', reviewId)
+
+    if (error) {
+      console.error('방명록 삭제 실패:', error)
+      alert('후기 삭제에 실패했습니다. 잠시 후 다시 시도해 주세요.')
+      return
+    }
+
+    setReviews((prev) => prev.filter((review) => review.id !== reviewId))
+    setMyReviewIds((prev) => prev.filter((id) => id !== reviewId))
+    setHasSubmittedReview(false)
   }
 
   useEffect(() => {
@@ -98,7 +202,6 @@ function ResultScreen({ result, onRestart }) {
       if (event.key !== 'Escape') return
       if (isReviewModalOpen) setIsReviewModalOpen(false)
       else if (isJobListModalOpen) setIsJobListModalOpen(false)
-      else if (isCommentModalOpen) setIsCommentModalOpen(false)
       else if (isModalOpen) setIsModalOpen(false)
     }
 
@@ -109,13 +212,7 @@ function ResultScreen({ result, onRestart }) {
       document.body.style.overflow = ''
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [
-    isAnyModalOpen,
-    isModalOpen,
-    isJobListModalOpen,
-    isCommentModalOpen,
-    isReviewModalOpen,
-  ])
+  }, [isAnyModalOpen, isModalOpen, isJobListModalOpen, isReviewModalOpen])
 
   return (
     <section className="fantasy-result-layout">
@@ -134,9 +231,13 @@ function ResultScreen({ result, onRestart }) {
         </div>
 
         <div className="fantasy-result__personality-box">
-          <p className="fantasy-result__personality leading-loose tracking-wide text-justify">
-            {viewResult.personalityDesc}
-          </p>
+          {splitIntoParagraphs(viewResult.personalityDesc).map(
+            (paragraph, index) => (
+              <p key={index} className="fantasy-result__personality-para">
+                {renderWithEmphasis(paragraph)}
+              </p>
+            )
+          )}
         </div>
 
         <div className="fantasy-result__buttons">
@@ -145,24 +246,26 @@ function ResultScreen({ result, onRestart }) {
             className="fantasy-btn fantasy-btn--glow fantasy-result__ability-toggle"
             onClick={() => setIsModalOpen(true)}
           >
-            해당 직업의 능력설명 보기
+            능력설명 보기
           </button>
 
-          <button
-            type="button"
-            className="fantasy-btn fantasy-btn--glow fantasy-btn--restart fantasy-result__restart"
-            onClick={onRestart}
-          >
-            다시 시험받기
-          </button>
+          <div className="fantasy-result__btn-row">
+            <button
+              type="button"
+              className="fantasy-btn fantasy-btn--glow fantasy-btn--restart fantasy-result__restart"
+              onClick={onRestart}
+            >
+              다시하기
+            </button>
 
-          <button
-            type="button"
-            className="fantasy-btn fantasy-btn--sub"
-            onClick={handleOpenJobList}
-          >
-            20가지 직업 목록 보기
-          </button>
+            <button
+              type="button"
+              className="fantasy-btn fantasy-btn--sub"
+              onClick={handleOpenJobList}
+            >
+              직업목록보기
+            </button>
+          </div>
 
           <button
             type="button"
@@ -217,51 +320,16 @@ function ResultScreen({ result, onRestart }) {
               />
             </div>
 
-            <p className="fantasy-ability-modal__desc leading-loose tracking-wide text-justify">
-              {abilityText}
-            </p>
-          </div>
-        </div>
-      )}
-
-      <button
-        type="button"
-        className="fantasy-author-credit fantasy-author-credit--clickable"
-        aria-label="개발자 코멘트 보기"
-        onClick={() => setIsCommentModalOpen(true)}
-      >
-        기획 · 개발 이한
-      </button>
-
-      {isCommentModalOpen && (
-        <div
-          className="fantasy-ability-modal fantasy-comment-modal"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="comment-modal-title"
-          onClick={() => setIsCommentModalOpen(false)}
-        >
-          <div
-            className="fantasy-comment-modal__card"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <h2 id="comment-modal-title" className="fantasy-comment-modal__title">
-              [ ✉️ 개발자 코멘트 ]
-            </h2>
-
-            <p className="fantasy-comment-modal__body leading-relaxed tracking-wide text-left">
-              재밌게 플레이해주셔서 감사합니다.
-              <br />
-              더 좋은 피드백 제안은 dlgks888g@naver.com로 남겨주세요!
-            </p>
-
-            <button
-              type="button"
-              className="fantasy-comment-modal__close-btn"
-              onClick={() => setIsCommentModalOpen(false)}
-            >
-              닫기
-            </button>
+            <div className="fantasy-ability-modal__desc">
+              {splitIntoParagraphs(abilityText).map((paragraph, index) => (
+                <p
+                  key={index}
+                  className="fantasy-ability-modal__desc-para"
+                >
+                  {renderWithEmphasis(paragraph)}
+                </p>
+              ))}
+            </div>
           </div>
         </div>
       )}
@@ -337,61 +405,125 @@ function ResultScreen({ result, onRestart }) {
             </button>
 
             <h2 id="review-modal-title" className="fantasy-review-modal__title">
-              [ 📜 이세계 방명록 ]
+              📜 이세계 방명록
             </h2>
 
-            <div className="fantasy-review-modal__form">
-              <input
-                type="text"
-                className="fantasy-review-modal__nickname"
-                placeholder="ㅇㅇ"
-                maxLength={12}
-                value={nickname}
-                onChange={(event) => setNickname(event.target.value)}
-              />
-              <input
-                type="text"
-                className="fantasy-review-modal__comment"
-                placeholder="한 줄 후기를 남겨보세요..."
-                maxLength={120}
-                value={comment}
-                onChange={(event) => setComment(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter') handleSubmitReview()
-                }}
-              />
-              <button
-                type="button"
-                className="fantasy-review-modal__submit"
-                disabled={isSubmitting}
-                onClick={handleSubmitReview}
-              >
-                등록
-              </button>
+            {/* 1. 개발자 코멘트 — 최상단 고정, 삭제 불가 */}
+            <div className="fantasy-review-modal__dev-pin leading-relaxed tracking-wide">
+              <span className="fantasy-review-modal__dev-nick">👑 개발자</span>
+              <span className="fantasy-review-modal__item-sep"> : </span>
+              <span className="fantasy-review-modal__dev-text">
+                플레이해주셔서 감사합니다.
+              </span>
             </div>
 
+            {/* 2. 후기 등록 폼 */}
+            {hasSubmittedReview ? (
+              <p className="fantasy-review-modal__done leading-relaxed tracking-wide">
+                이미 후기를 남기셨습니다. 감사합니다!
+              </p>
+            ) : (
+              <div className="fantasy-review-modal__form">
+                <span
+                  className="fantasy-review-modal__identity"
+                  title="당신의 직업이 닉네임으로 자동 기록됩니다"
+                >
+                  {reviewerName}
+                </span>
+                <input
+                  type="text"
+                  className="fantasy-review-modal__comment"
+                  placeholder="한 줄 후기를 남겨보세요..."
+                  maxLength={120}
+                  value={comment}
+                  onChange={(event) => setComment(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') handleSubmitReview()
+                  }}
+                />
+                <button
+                  type="button"
+                  className="fantasy-review-modal__submit"
+                  disabled={isSubmitting}
+                  onClick={handleSubmitReview}
+                >
+                  등록
+                </button>
+              </div>
+            )}
+
+            {/* 3. 유저 후기 목록 */}
             <div className="fantasy-review-modal__list">
-              {reviews.length === 0 ? (
+              {userReviews.length === 0 ? (
                 <p className="fantasy-review-modal__empty leading-relaxed tracking-wide">
                   아직 남겨진 후기가 없습니다. 첫 번째 후기를 남겨보세요!
                 </p>
               ) : (
-                reviews.map((review) => (
+                pagedReviews.map((review) => (
                   <p
                     key={review.id}
                     className="fantasy-review-modal__item leading-relaxed tracking-wide text-left"
                   >
                     <span className="fantasy-review-modal__item-nick">
-                      [{review.nickname}]
+                      {review.nickname}
                     </span>
                     <span className="fantasy-review-modal__item-sep"> : </span>
                     <span className="fantasy-review-modal__item-text">
                       {review.comment}
                     </span>
+                    {myReviewIds.includes(review.id) && (
+                      <button
+                        type="button"
+                        className="fantasy-review-modal__delete"
+                        aria-label="내 후기 삭제"
+                        onClick={() => handleDeleteReview(review.id)}
+                      >
+                        삭제
+                      </button>
+                    )}
                   </p>
                 ))
               )}
             </div>
+
+            {userReviews.length > 0 && totalPages > 1 && (
+              <div className="fantasy-review-modal__pagination">
+                <button
+                  type="button"
+                  className="fantasy-review-modal__page-btn"
+                  disabled={safePage === 1}
+                  onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                >
+                  이전
+                </button>
+
+                {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+                  (pageNumber) => (
+                    <button
+                      key={pageNumber}
+                      type="button"
+                      className={`fantasy-review-modal__page-btn ${
+                        pageNumber === safePage ? 'is-active' : ''
+                      }`}
+                      onClick={() => setCurrentPage(pageNumber)}
+                    >
+                      {pageNumber}
+                    </button>
+                  )
+                )}
+
+                <button
+                  type="button"
+                  className="fantasy-review-modal__page-btn"
+                  disabled={safePage === totalPages}
+                  onClick={() =>
+                    setCurrentPage((page) => Math.min(totalPages, page + 1))
+                  }
+                >
+                  다음
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

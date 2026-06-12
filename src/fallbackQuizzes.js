@@ -86,7 +86,7 @@ export const FALLBACK_QUIZZES = [
   },
   {
     question_number: 8,
-    question: '눈앞에 화려한 보물상자와 먼지가 쌓인 낡은 책 한 권이 있습니다. 무엇을 고르겠습니까?',
+    question: '눈앞에 화려한 보물상자와 먼지 쌓인 낡은 책이 있습니다. 당신은 무엇을 고르겠습니까?',
     option1: '당장 부자가 될 수 있는 화려한 보물상자',
     option2: '이 세계의 비밀이 담겨있을 것 같은 낡은 책',
     option3: '욕심을 내어 둘 다 가방에 쑤셔 넣는다',

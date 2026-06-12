@@ -13,22 +13,22 @@ function MainScreen({ onGoToWorldview, onGoToGuide }) {
 
       <div className="fantasy-main__front-content">
         <div className="title-wrap">
-          <p className="sub-line">태어나자마자 모든 게 결정되는</p>
+          <p className="sub-line">성향으로 알아보는 이세계</p>
           <div className="divider-top">
             <div className="divider-line" />
             <div className="divider-diamond" />
             <div className="divider-line" />
           </div>
           <div className="main-title-wrap">
-            <div className="main-title">이능력 세계</div>
+            <div className="main-title">이능력 찾기</div>
           </div>
           <div className="divider-bottom">
             <div className="divider-line" />
             <div className="divider-diamond" />
             <div className="divider-line" />
           </div>
-          <p className="ability-tag">ability &nbsp;·&nbsp; world &nbsp;·&nbsp; RPG</p>
-          <p className="eng-sub">where destiny is written at birth</p>
+          <p className="ability-tag">personality &nbsp;·&nbsp; ability &nbsp;·&nbsp; RPG</p>
+          <p className="eng-sub">find the ability that&apos;s written in your soul</p>
         </div>
 
         <div className="fantasy-main__btn-group">

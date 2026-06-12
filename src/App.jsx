@@ -43,7 +43,7 @@ function GoddessInterviewPanel({
       {interviewStep === 'step1' && (
         <div className="goddess-interview__step1-root">
           <div className="goddess-interview__record-badge">
-            소 환 기 록
+            소환 기록
           </div>
 
           <div className="goddess-interview__opening-lines">
@@ -59,12 +59,8 @@ function GoddessInterviewPanel({
           </div>
 
           <div className="goddess-interview__lore-block">
-            <p>이세계에서는 단 하나의 이능력이</p>
-            <p>그 사람의</p>
-            <p className="goddess-interview__gold-line">
-              신분도, 계급도, 살아갈 자격마저도
-            </p>
-            <p>결정한다고 했다.</p>
+            <p>이세계에서는 여신과의 대화를 통해</p>
+            <p>나의 이능력을 개방시켜준다고 한다.</p>
           </div>
 
           <div className="goddess-interview__divider-bar" aria-hidden="true" />
@@ -72,7 +68,7 @@ function GoddessInterviewPanel({
           <div className="goddess-interview__statue-block">
             <p>그리고 나는 지금,</p>
             <p className="goddess-interview__gold-title">
-              그 모든 것을 결정하는 여신의 조각상
+              그 이능력을 부여해준다는 여신의 조각상
             </p>
             <p>앞에 서 있다.</p>
           </div>
@@ -286,24 +282,42 @@ function App() {
   const [guideShowDetail, setGuideShowDetail] = useState(false)
   const [jobListShowDetail, setJobListShowDetail] = useState(false)
   const [isAwakening, setIsAwakening] = useState(false)
-  const [eyeOpen, setEyeOpen] = useState(false)
+  const [awakeningPhase, setAwakeningPhase] = useState(0)
   const [userChoices, setUserChoices] = useState([])
+  const [responseId, setResponseId] = useState(null)
   const [interviewStep, setInterviewStep] = useState('step1')
+  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false)
   const scoresRef = useRef(INITIAL_SCORES)
   const currentIdxRef = useRef(0)
   const userChoicesRef = useRef([])
   const awakeningTimersRef = useRef([])
-  const { playSelectSound, playAwakeningSound } = useGameSound()
+  const {
+    playSelectSound,
+    playBoomSound,
+    playHammerSound,
+    playCompleteSound,
+  } = useGameSound()
 
   useEffect(() => {
     currentIdxRef.current = currentIdx
   }, [currentIdx])
 
   useEffect(() => {
-    if (isAwakening) {
-      playAwakeningSound()
+    if (!isCommentModalOpen) return undefined
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') setIsCommentModalOpen(false)
     }
-  }, [isAwakening, playAwakeningSound])
+
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isCommentModalOpen])
+
 
   useEffect(() => {
     if (screen === SCREENS.GUIDE) {
@@ -375,9 +389,10 @@ function App() {
     setFinalResult(null)
     setHasCompletedQuiz(false)
     setIsAwakening(false)
-    setEyeOpen(false)
+    setAwakeningPhase(0)
     userChoicesRef.current = []
     setUserChoices([])
+    setResponseId(null)
     awakeningTimersRef.current.forEach(clearTimeout)
     awakeningTimersRef.current = []
   }
@@ -445,11 +460,13 @@ function App() {
       setFinalResult({ key: jobKey, ...jobResult })
       setHasCompletedQuiz(true)
 
+      setResponseId(null)
+
       if (isSupabaseConfigured && supabase) {
         supabase
           .from('user_responses')
           .insert({
-            user_name: '',
+            user_name: jobResult.displayName,
             selected_choices: nextChoices,
             final_scores: nextScores,
             matched_job: jobResult.displayName,
@@ -460,6 +477,7 @@ function App() {
               console.error('응답 저장 실패:', error)
             } else {
               console.log('응답 저장 성공:', data)
+              setResponseId(data?.[0]?.id ?? null)
             }
           })
       }
@@ -467,17 +485,47 @@ function App() {
       awakeningTimersRef.current.forEach(clearTimeout)
       awakeningTimersRef.current = []
 
+      // 마법진 연성 시퀀스 시작
       setIsAwakening(true)
-      setEyeOpen(false)
+      setAwakeningPhase(0)
 
-      awakeningTimersRef.current.push(
-        setTimeout(() => setEyeOpen(true), 1500),
-        setTimeout(() => {
+      // 히든 클래스(17~20)는 망치 5타 + 강화 연출 (총 3200ms)
+      const isHiddenClass = getJobTitleClass(jobKey).includes('hidden')
+
+      const normalSchedule = [
+        [0, () => { setAwakeningPhase(0); playBoomSound() }],
+        [300, () => { setAwakeningPhase(1); playHammerSound() }],
+        [700, () => { setAwakeningPhase(2); playHammerSound() }],
+        [1100, () => { setAwakeningPhase(3); playHammerSound() }],
+        [1600, () => { setAwakeningPhase(4) }],
+        [2400, () => { setAwakeningPhase(5); playCompleteSound() }],
+        [3000, () => {
           setIsAwakening(false)
-          setEyeOpen(false)
+          setAwakeningPhase(0)
           goToScreen(SCREENS.RESULT)
-        }, 3000)
-      )
+        }],
+      ]
+
+      const hiddenSchedule = [
+        [0, () => { setAwakeningPhase(0); playBoomSound() }],
+        [200, () => { setAwakeningPhase(1); playHammerSound() }],
+        [500, () => { setAwakeningPhase(2); playHammerSound() }],
+        [800, () => { setAwakeningPhase(3); playHammerSound() }],
+        [1000, () => { setAwakeningPhase(2); playHammerSound() }],
+        [1300, () => { setAwakeningPhase(3); playHammerSound() }],
+        [1700, () => { setAwakeningPhase(4) }],
+        [2300, () => { setAwakeningPhase(5); playCompleteSound() }],
+        [3200, () => {
+          setIsAwakening(false)
+          setAwakeningPhase(0)
+          goToScreen(SCREENS.RESULT)
+        }],
+      ]
+
+      const schedule = isHiddenClass ? hiddenSchedule : normalSchedule
+      schedule.forEach(([ms, fn]) => {
+        awakeningTimersRef.current.push(setTimeout(fn, ms))
+      })
     }
   }
 
@@ -573,16 +621,59 @@ function App() {
           <ResultScreen
             result={finalResult}
             onRestart={handleRestart}
+            responseId={responseId}
           />
         )}
       </main>
 
-      {isAwakening && <AwakeningOverlay eyeOpen={eyeOpen} />}
+      {isAwakening && (
+        <AwakeningOverlay
+          phase={awakeningPhase}
+          jobName={finalResult?.displayName ?? ''}
+          jobTitleClass={finalResult ? getJobTitleClass(finalResult.key) : ''}
+        />
+      )}
 
-      {screen === SCREENS.MAIN && (
-        <p className="fantasy-author-credit" aria-label="제작자 크레딧">
-          기획 · 개발 이한
-        </p>
+      <button
+        type="button"
+        className="fantasy-author-credit fantasy-author-credit--clickable"
+        aria-label="개발자 코멘트 보기"
+        onClick={() => setIsCommentModalOpen(true)}
+      >
+        기획 · 개발 이한
+      </button>
+
+      {isCommentModalOpen && (
+        <div
+          className="fantasy-ability-modal fantasy-comment-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="comment-modal-title"
+          onClick={() => setIsCommentModalOpen(false)}
+        >
+          <div
+            className="fantasy-comment-modal__card"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h2 id="comment-modal-title" className="fantasy-comment-modal__title">
+              [ ✉️ 개발자 코멘트 ]
+            </h2>
+
+            <p className="fantasy-comment-modal__body leading-relaxed tracking-wide text-left">
+              재밌게 플레이해주셔서 감사합니다.
+              <br />
+              더 좋은 피드백 제안은 dlgks888g@naver.com로 남겨주세요!
+            </p>
+
+            <button
+              type="button"
+              className="fantasy-comment-modal__close-btn"
+              onClick={() => setIsCommentModalOpen(false)}
+            >
+              닫기
+            </button>
+          </div>
+        </div>
       )}
     </div>
   )

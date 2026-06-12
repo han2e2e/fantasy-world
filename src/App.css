@@ -729,7 +729,7 @@ body,
   flex-direction: column;
   align-items: center;
   width: 100%;
-  gap: 2.5rem;
+  gap: 1.6rem;
   text-align: center;
   animation: goddess-narrative-in 0.7s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
@@ -738,13 +738,14 @@ body,
   font-family: 'Noto Serif KR', serif;
   font-size: 0.95rem;
   font-weight: 600;
-  letter-spacing: 0.45em;
-  text-indent: 0.45em;
+  letter-spacing: 0.15em;
+  text-indent: 0.15em;
   color: rgba(250, 204, 21, 0.85);
   text-shadow: 0 0 10px rgba(250, 204, 21, 0.25);
   border-bottom: 1px solid rgba(250, 204, 21, 0.25);
-  padding: 0 1.2rem 0.6rem;
-  margin-bottom: 1rem;
+  padding: 0 1.2rem 0.55rem;
+  margin-bottom: 0.4rem;
+  word-break: keep-all;
 }
 
 .goddess-interview__opening-lines {
@@ -849,6 +850,44 @@ body,
   .goddess-interview__gold-line,
   .goddess-interview__gold-title {
     font-size: 1.5rem;
+  }
+}
+
+/* 모바일: 소환 기록 화면이 스크롤 없이 한 화면에 안착하도록 컴팩트화 */
+@media (max-width: 768px) {
+  .goddess-interview__step1-root {
+    gap: 1.1rem;
+  }
+
+  .goddess-interview__opening-lines {
+    gap: 0.9rem;
+  }
+
+  .goddess-interview__lore-block,
+  .goddess-interview__statue-block {
+    gap: 0.5rem;
+    padding-top: 0;
+  }
+
+  .goddess-interview__line,
+  .goddess-interview__lore-block > p,
+  .goddess-interview__statue-block > p {
+    font-size: 0.98rem;
+    line-height: 1.55;
+    text-align: center;
+    word-break: keep-all;
+  }
+
+  .goddess-interview__gold-title {
+    font-size: 1.08rem;
+    word-break: keep-all;
+  }
+
+  .goddess-interview__touch-btn--step1 {
+    margin-top: 0.5rem;
+    min-width: 240px;
+    padding: 0.85rem 1.5rem;
+    font-size: 1rem;
   }
 }
 
@@ -1196,9 +1235,9 @@ body,
 
 .fantasy-btn--option {
   background: rgba(12, 8, 24, 0.7) !important;
-  color: rgba(210, 205, 235, 0.85) !important;
-  -webkit-text-fill-color: rgba(210, 205, 235, 0.85) !important;
-  border: 1px solid rgba(191, 90, 242, 0.18) !important;
+  color: #f5f5f7 !important;
+  -webkit-text-fill-color: #f5f5f7 !important;
+  border: 1px solid rgba(232, 201, 106, 0.22) !important;
   border-radius: 4px !important;
   padding: 18px 28px !important;
   font-size: 1rem !important;
@@ -1216,24 +1255,34 @@ body,
 }
 
 .fantasy-btn--option:hover:not(:disabled),
+.fantasy-btn--option:focus-visible:not(:disabled),
 .fantasy-btn--option.fantasy-btn--glow:hover:not(:disabled) {
-  background: rgba(191, 90, 242, 0.08) !important;
-  color: rgba(235, 228, 255, 1) !important;
-  -webkit-text-fill-color: rgba(235, 228, 255, 1) !important;
-  border-color: rgba(191, 90, 242, 0.5) !important;
+  background: rgba(232, 201, 106, 0.1) !important;
+  color: #fffdf5 !important;
+  -webkit-text-fill-color: #fffdf5 !important;
+  border-color: #e8c96a !important;
+  text-shadow: 0 0 10px rgba(232, 201, 106, 0.45) !important;
   box-shadow:
-    0 0 20px rgba(191, 90, 242, 0.15),
-    inset 0 0 30px rgba(191, 90, 242, 0.04) !important;
+    0 0 22px rgba(232, 201, 106, 0.28),
+    inset 0 0 34px rgba(232, 201, 106, 0.06) !important;
   transform: translateX(4px) !important;
+}
+
+.fantasy-btn--option:hover:not(:disabled) .fantasy-quiz__option-text::first-letter,
+.fantasy-btn--option:focus-visible:not(:disabled) .fantasy-quiz__option-text::first-letter {
+  color: #ffe9a8;
+  -webkit-text-fill-color: #ffe9a8;
+  text-shadow: 0 0 12px rgba(232, 201, 106, 0.6);
 }
 
 .fantasy-btn--option:active {
   transform: translateX(2px) !important;
-  background: rgba(191, 90, 242, 0.12) !important;
+  background: rgba(232, 201, 106, 0.14) !important;
 }
 
 .fantasy-quiz__option-text::first-letter {
-  color: rgba(191, 90, 242, 0.8);
+  color: #e8c96a;
+  -webkit-text-fill-color: #e8c96a;
   font-weight: 700;
 }
 
@@ -1323,11 +1372,12 @@ body,
 
 .fantasy-quiz__label {
   font-family: 'Noto Serif KR', serif;
-  font-size: 0.72rem;
-  font-weight: 300;
-  letter-spacing: 0.55em;
-  text-indent: 0.55em;
-  color: rgba(191, 90, 242, 0.7);
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.4em;
+  text-indent: 0.4em;
+  color: #e8c96a;
+  text-shadow: 0 0 10px rgba(232, 201, 106, 0.25);
   margin-bottom: 20px;
   display: inline-block;
   position: relative;
@@ -1341,7 +1391,7 @@ body,
   transform: translateY(-50%);
   width: 20px;
   height: 1px;
-  background: rgba(191, 90, 242, 0.4);
+  background: rgba(232, 201, 106, 0.45);
 }
 
 .fantasy-quiz__label::before {
@@ -1354,17 +1404,38 @@ body,
 
 .fantasy-quiz__question {
   font-family: 'Noto Serif KR', serif;
-  font-size: 1.6rem;
+  font-size: clamp(1.15rem, 4.2vw, 1.6rem);
   font-weight: 400;
-  letter-spacing: 0.04em;
-  line-height: 2;
+  letter-spacing: -0.02em;
+  line-height: 1.7;
   color: rgba(235, 228, 255, 0.92);
   text-shadow:
     0 0 40px rgba(191, 90, 242, 0.15),
     0 2px 8px rgba(0, 0, 0, 0.8);
-  margin: 0 0 36px;
+  margin: 0 auto 32px;
+  max-width: 600px;
   word-break: keep-all;
+  overflow-wrap: break-word;
   text-align: center;
+}
+
+/* 두 줄 사이 간격을 시각적으로 더 확보 (상용 게임 수준 가독성) */
+.fantasy-quiz__question br {
+  content: '';
+  display: block;
+  margin-bottom: 0.35em;
+}
+
+@media (max-width: 768px) {
+  .fantasy-quiz__question {
+    font-size: clamp(1.05rem, 5vw, 1.3rem);
+    line-height: 1.7;
+    letter-spacing: -0.02em;
+    margin-bottom: 28px;
+    padding: 0 6px;
+    word-break: keep-all;
+    text-align: center;
+  }
 }
 
 .fantasy-quiz__last-notice {
@@ -1806,35 +1877,36 @@ body,
 }
 
 .fantasy-result__personality-box {
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  max-width: 550px;
-  height: 210px;
-  flex-shrink: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-  padding: 0 6px;
+  max-width: 600px;
+  flex-shrink: 1;
+  min-height: 0;
+  padding: 0 4px;
   box-sizing: border-box;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(157, 110, 207, 0.35) transparent;
 }
 
-.fantasy-result__personality-box::-webkit-scrollbar {
-  width: 5px;
-}
-
-.fantasy-result__personality-box::-webkit-scrollbar-thumb {
-  background: rgba(157, 110, 207, 0.35);
-  border-radius: 999px;
-}
-
-.fantasy-result__personality {
-  margin: 0;
+.fantasy-result__personality-para {
+  margin: 0 0 0.85rem;
   font-family: 'Noto Serif KR', serif;
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 400;
-  color: rgba(215, 210, 235, 0.9);
-  max-width: 100%;
+  line-height: 1.75;
+  letter-spacing: 0.015em;
+  color: rgba(216, 211, 236, 0.92);
+  text-align: center;
   word-break: keep-all;
+}
+
+.fantasy-result__personality-para:last-child {
+  margin-bottom: 0;
+}
+
+.fantasy-result__keyword {
+  font-weight: 700;
+  color: #facc15;
+  text-shadow: 0 0 8px rgba(250, 204, 21, 0.3);
 }
 
 .fantasy-result__header {
@@ -1850,33 +1922,84 @@ body,
   order: 2;
 }
 
+/* 1층 — 메인 액션 (가장 크고 강조) */
 .fantasy-result__ability-toggle {
-  min-width: 260px;
-  padding: 12px 28px;
-  background: rgba(8, 6, 18, 0.45);
-  border: 1px solid rgba(232, 201, 106, 0.45);
+  width: 100%;
+  min-width: 0;
+  padding: 15px 28px;
+  font-size: 1.08rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: linear-gradient(
+    135deg,
+    rgba(60, 38, 12, 0.65) 0%,
+    rgba(28, 18, 8, 0.6) 100%
+  );
+  border: 1px solid rgba(232, 201, 106, 0.6);
   box-shadow:
-    0 0 18px rgba(232, 201, 106, 0.12),
-    inset 0 0 12px rgba(232, 201, 106, 0.06);
+    0 0 22px rgba(232, 201, 106, 0.18),
+    inset 0 0 14px rgba(232, 201, 106, 0.08);
 }
 
 .fantasy-result__ability-toggle:hover {
-  border-color: rgba(232, 201, 106, 0.7);
+  border-color: rgba(232, 201, 106, 0.85);
   box-shadow:
-    0 0 28px rgba(232, 201, 106, 0.22),
-    inset 0 0 16px rgba(232, 201, 106, 0.1);
+    0 0 32px rgba(232, 201, 106, 0.28),
+    inset 0 0 18px rgba(232, 201, 106, 0.12);
+  transform: translateY(-1px);
 }
 
+/* 하단 버튼 패키지: [1] 메인 + [2] 가로 2분할 + [1] 후기 */
 .fantasy-result__buttons {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
   width: 100%;
-  max-width: 550px;
-  flex-shrink: 0;
-  margin: 0;
+  max-width: 380px;
+  margin: 0 auto;
   padding: 0;
+}
+
+.fantasy-result__buttons > .fantasy-btn {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+}
+
+/* 2층 — 서브 이동 액션 (좌우 균등 반반) */
+.fantasy-result__btn-row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.fantasy-result__btn-row > .fantasy-btn {
+  flex: 1 1 0;
+  width: 50%;
+  min-width: 0;
+  margin: 0;
+  padding: 11px 16px;
+  font-size: 0.95rem;
+}
+
+/* 3층 — 마감 액션 (아웃라인, 과하지 않게) */
+.fantasy-result__review-btn {
+  padding: 10px 24px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  background: transparent;
+  border: 1px solid rgba(157, 110, 207, 0.45);
+  color: rgba(206, 192, 230, 0.85);
+  box-shadow: none;
+}
+
+.fantasy-result__review-btn:hover {
+  border-color: rgba(187, 154, 225, 0.75);
+  background: rgba(157, 110, 207, 0.1);
+  color: rgba(226, 214, 245, 0.95);
+  box-shadow: 0 0 14px rgba(157, 110, 207, 0.18);
 }
 
 .fantasy-ability-modal {
@@ -1949,6 +2072,7 @@ body,
 
 .fantasy-ability-modal__title-wrap {
   margin-bottom: 18px;
+  text-align: center;
 }
 
 .fantasy-ability-modal__title {
@@ -1956,12 +2080,33 @@ body,
 }
 
 .fantasy-ability-modal__desc {
+  display: flex;
+  flex-direction: column;
   margin: 0;
+  text-align: center;
+}
+
+.fantasy-ability-modal__desc-para {
+  margin: 0 0 1rem;
   font-family: 'Noto Serif KR', serif;
-  font-size: 1.05rem;
+  font-size: 1.02rem;
+  font-weight: 400;
+  line-height: 1.85;
+  letter-spacing: 0.015em;
   color: rgba(228, 222, 240, 0.95);
+  text-align: center;
   word-break: keep-all;
   white-space: normal;
+}
+
+.fantasy-ability-modal__desc-para:last-child {
+  margin-bottom: 0;
+}
+
+.fantasy-ability-modal__desc .fantasy-result__keyword {
+  color: #facc15;
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(250, 204, 21, 0.3);
 }
 
 @keyframes fantasy-modal-fade-in {
@@ -2119,8 +2264,7 @@ body,
   margin: 0 auto;
   padding: 20px 40px;
   box-sizing: border-box;
-  overflow: hidden;
-  flex-shrink: 0;
+  overflow: visible;
   opacity: 0;
   animation: fantasy-fade-in-up 0.7s cubic-bezier(0.25, 1, 0.5, 1) forwards;
   animation-delay: 0.1s;
@@ -2137,9 +2281,8 @@ body,
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 20px;
+  gap: 16px;
   min-height: 0;
-  flex-shrink: 0;
 }
 
 .fantasy-result__left-content .fantasy-result__desc {
@@ -2312,17 +2455,68 @@ body,
 @media (max-width: 768px) {
   .fantasy-result-layout {
     flex-direction: column-reverse;
-    padding: 20px 16px;
-    gap: 24px;
+    padding: 14px 16px;
+    gap: 14px;
+  }
+
+  .fantasy-result__left-content {
+    gap: 12px;
   }
 
   .fantasy-result__personality-box {
-    height: 190px;
     max-width: 100%;
+    padding: 0 2px;
+  }
+
+  .fantasy-result__personality-para {
+    margin-bottom: 0.6rem;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    letter-spacing: 0;
+    /* 모바일: 양끝정렬 금지 → 단어 간격 벌어짐 방지, 중앙 정렬 */
+    text-align: center;
+    text-justify: auto;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+
+  .fantasy-result__keyword {
+    text-shadow: none;
+  }
+
+  /* 일러스트가 세로를 너무 차지하지 않도록 축소 */
+  .fantasy-result__illustration-frame {
+    max-width: 240px;
+  }
+
+  .fantasy-result__buttons {
+    gap: 8px;
+    max-width: 340px;
+  }
+
+  .fantasy-result__ability-toggle {
+    padding: 10px 22px;
+  }
+
+  .fantasy-result__btn-row > .fantasy-btn {
+    padding: 10px 12px;
+    font-size: 0.9rem;
   }
 
   .fantasy-result__left-content .fantasy-result__desc {
     max-width: 100%;
+  }
+}
+
+/* 초소형 화면(아주 좁은 폰) 추가 보정 */
+@media (max-width: 380px) {
+  .fantasy-result__personality-para {
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  .fantasy-result__illustration-frame {
+    max-width: 200px;
   }
 }
 
@@ -2911,29 +3105,26 @@ body,
 /* 우측 하단 제작자 크레딧 (메인 · 결과 화면 공통) */
 .fantasy-author-credit {
   position: fixed;
-  right: 1rem;
-  bottom: 1rem;
-  z-index: 110;
+  right: 16px;
+  bottom: 16px;
+  z-index: 9999;
   margin: 0;
-  padding: 0;
+  padding: 4px 8px;
   border: none;
   background: transparent;
   font-family: 'Noto Serif KR', serif;
-  font-size: 0.75rem;
-  font-weight: 400;
-  letter-spacing: 0.1em;
-  color: rgba(212, 195, 225, 0.4);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: #e8c96a;
+  text-shadow:
+    0 0 8px rgba(0, 0, 0, 0.65),
+    0 0 14px rgba(232, 201, 106, 0.2);
   transition:
     color 0.3s ease,
     opacity 0.3s ease,
     transform 0.3s ease;
   pointer-events: auto;
-}
-
-@media (min-width: 768px) {
-  .fantasy-author-credit {
-    font-size: 0.875rem;
-  }
 }
 
 .fantasy-author-credit:hover {
@@ -3062,9 +3253,40 @@ body,
 }
 
 .fantasy-review-modal__nickname {
-  width: 84px;
+  width: auto;
+  max-width: 140px;
   flex-shrink: 0;
   text-align: center;
+}
+
+.fantasy-review-modal__nickname:disabled {
+  color: rgba(250, 204, 21, 0.85);
+  border-color: rgba(250, 204, 21, 0.35);
+  background: rgba(8, 6, 18, 0.4);
+  font-weight: 600;
+  cursor: not-allowed;
+  opacity: 1;
+  -webkit-text-fill-color: rgba(250, 204, 21, 0.85);
+}
+
+.fantasy-review-modal__identity {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  max-width: 140px;
+  padding: 10px 12px;
+  border: 1px solid rgba(250, 204, 21, 0.35);
+  border-radius: 8px;
+  background: rgba(250, 204, 21, 0.06);
+  font-family: 'Noto Serif KR', serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(250, 204, 21, 0.9);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .fantasy-review-modal__comment {
@@ -3157,10 +3379,396 @@ body,
   color: rgba(250, 204, 21, 0.85);
 }
 
+/* 개발자 코멘트 — 타이틀 바로 아래 최상단 고정 박스 */
+.fantasy-review-modal__dev-pin {
+  width: 100%;
+  margin: 0 0 20px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(250, 204, 21, 0.35);
+  background: rgba(250, 204, 21, 0.08);
+  box-shadow: inset 0 0 18px rgba(250, 204, 21, 0.08);
+  font-family: 'Noto Serif KR', serif;
+  font-size: 0.95rem;
+  text-align: center;
+  word-break: keep-all;
+}
+
+.fantasy-review-modal__dev-nick {
+  font-weight: 700;
+  color: #facc15;
+  text-shadow: 0 0 8px rgba(250, 204, 21, 0.35);
+}
+
+.fantasy-review-modal__dev-text {
+  color: rgba(232, 226, 245, 0.95);
+}
+
 .fantasy-review-modal__item-sep {
   color: rgba(180, 175, 200, 0.5);
 }
 
 .fantasy-review-modal__item-text {
   color: rgba(220, 214, 235, 0.9);
+}
+
+.fantasy-review-modal__delete {
+  margin-left: 8px;
+  padding: 1px 8px;
+  border: 1px solid rgba(255, 107, 129, 0.45);
+  border-radius: 6px;
+  background: rgba(255, 107, 129, 0.08);
+  font-family: 'Noto Serif KR', serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: rgba(255, 154, 170, 0.95);
+  cursor: pointer;
+  vertical-align: middle;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.fantasy-review-modal__delete:hover {
+  background: rgba(255, 107, 129, 0.18);
+  border-color: rgba(255, 107, 129, 0.7);
+}
+
+.fantasy-review-modal__done {
+  margin: 0 0 18px;
+  padding: 14px 12px;
+  border: 1px solid rgba(250, 204, 21, 0.3);
+  border-radius: 8px;
+  background: rgba(250, 204, 21, 0.06);
+  font-family: 'Noto Serif KR', serif;
+  font-size: 0.92rem;
+  color: rgba(250, 204, 21, 0.9);
+}
+
+.fantasy-review-modal__pagination {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+}
+
+.fantasy-review-modal__page-btn {
+  min-width: 32px;
+  padding: 6px 10px;
+  border: 1px solid rgba(147, 51, 234, 0.35);
+  border-radius: 6px;
+  background: rgba(8, 6, 18, 0.5);
+  font-family: 'Noto Serif KR', serif;
+  font-size: 0.82rem;
+  color: rgba(220, 214, 235, 0.85);
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.fantasy-review-modal__page-btn:hover:not(:disabled) {
+  border-color: rgba(250, 204, 21, 0.55);
+  color: rgba(250, 204, 21, 0.9);
+}
+
+.fantasy-review-modal__page-btn.is-active {
+  border-color: rgba(250, 204, 21, 0.7);
+  background: rgba(250, 204, 21, 0.12);
+  color: rgba(250, 204, 21, 0.95);
+  font-weight: 600;
+}
+
+.fantasy-review-modal__page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* =============================================
+   마법진 연성 오버레이 — forge-overlay
+   ============================================= */
+.forge-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  background: radial-gradient(circle at center, rgba(12, 7, 24, 0.97) 0%, rgba(3, 2, 8, 0.99) 100%);
+  animation: forge-overlay-in 0.4s ease forwards;
+  overflow: hidden;
+}
+
+@keyframes forge-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.forge-overlay--hidden {
+  background: radial-gradient(circle at center, rgba(24, 4, 14, 0.98) 0%, rgba(8, 2, 6, 0.99) 100%);
+}
+
+.forge-bg-pulse {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, var(--forge-glow, rgba(245,200,66,0)) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  pointer-events: none;
+}
+
+.forge-bg-pulse--active {
+  opacity: 0.18;
+  animation: forge-pulse-breathe 2s ease-in-out infinite alternate;
+}
+
+@keyframes forge-pulse-breathe {
+  from { opacity: 0.12; transform: scale(0.95); }
+  to   { opacity: 0.28; transform: scale(1.05); }
+}
+
+.forge-circle-wrap {
+  position: relative;
+  width: min(88vw, 400px);
+  height: min(88vw, 400px);
+}
+
+.forge-circle-svg {
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes forge-ring-spin-cw {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes forge-ring-spin-ccw {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+
+@keyframes forge-circle-breathe {
+  from { transform: scale(0.98); }
+  to   { transform: scale(1.02); }
+}
+
+.forge-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.forge-particle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--forge-primary, #f5c842);
+  box-shadow: 0 0 6px var(--forge-glow, rgba(245,200,66,0.8));
+  animation: forge-particle-burst 0.5s ease-out forwards;
+  animation-delay: calc(var(--i) * 0.04s);
+  transform-origin: 0 0;
+  --angle: calc(var(--i) * 30deg);
+  --dist: calc(80px + var(--i) * 12px);
+}
+
+@keyframes forge-particle-burst {
+  0%   { transform: translate(-50%, -50%) rotate(var(--angle)) translateY(0);   opacity: 1; }
+  60%  { opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(-1 * var(--dist))); opacity: 0; }
+}
+
+.forge-class-reveal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  text-align: center;
+}
+
+.forge-class-reveal--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.forge-class-label {
+  margin: 0;
+  font-family: 'Noto Serif KR', serif;
+  font-size: 0.72rem;
+  font-weight: 300;
+  letter-spacing: 0.5em;
+  color: rgba(232, 201, 106, 0.6);
+  text-indent: 0.5em;
+}
+
+.forge-class-name {
+  margin: 0;
+  font-family: 'Noto Serif KR', serif;
+  font-size: clamp(1.8rem, 6vw, 2.8rem);
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  line-height: 1.2;
+  color: var(--forge-primary, #f5c842);
+  text-shadow: 0 0 30px var(--forge-glow, rgba(245,200,66,0.7));
+  animation: forge-class-shimmer 2s ease-in-out infinite alternate;
+  word-break: keep-all;
+  padding: 0 16px;
+}
+
+@keyframes forge-class-shimmer {
+  from { filter: brightness(1); }
+  to   { filter: brightness(1.25) drop-shadow(0 0 12px var(--forge-glow)); }
+}
+
+.forge-flash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255, 248, 220, 0.95) 0%, rgba(245, 200, 66, 0.4) 35%, transparent 65%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.1s ease;
+}
+
+.forge-flash--active {
+  animation: forge-flash-burst 0.6s ease-out forwards;
+}
+
+@keyframes forge-flash-burst {
+  0%   { opacity: 1; }
+  40%  { opacity: 0.7; }
+  100% { opacity: 0; }
+}
+
+.forge-overlay--hidden .forge-flash--active {
+  background: radial-gradient(circle at center, rgba(255, 100, 120, 0.95) 0%, rgba(191, 90, 242, 0.4) 35%, transparent 65%);
+}
+
+.forge-status-text {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 0.78rem;
+  font-weight: 300;
+  letter-spacing: 0.4em;
+  color: rgba(200, 180, 230, 0.55);
+  text-indent: 0.4em;
+  min-height: 1.2em;
+}
+
+@media (max-width: 480px) {
+  .forge-circle-wrap {
+    width: min(82vw, 320px);
+    height: min(82vw, 320px);
+  }
+  .forge-class-name {
+    font-size: clamp(1.5rem, 8vw, 2rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .forge-particle { animation: none; opacity: 0; }
+  .forge-bg-pulse--active { animation: none; }
+}
+
+/* =============================================
+   디자인 폴리시 (섹션 2 — CSS only)
+   ============================================= */
+
+/* 2-A 메인 타이틀 staggered fade-in */
+.fantasy-main__front-content > * {
+  opacity: 0;
+  animation: main-stagger-in 0.6s ease forwards;
+}
+.fantasy-main__front-content > *:nth-child(1) { animation-delay: 0.1s; }
+.fantasy-main__front-content > *:nth-child(2) { animation-delay: 0.25s; }
+.fantasy-main__front-content > *:nth-child(3) { animation-delay: 0.4s; }
+.fantasy-main__front-content > *:nth-child(4) { animation-delay: 0.55s; }
+
+@keyframes main-stagger-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 2-A CTA 버튼 위계 */
+.fantasy-main__btn-group .fantasy-btn:first-child {
+  font-size: 1.15rem;
+  padding: 17px 44px;
+  box-shadow: 0 0 28px rgba(232, 201, 106, 0.3), inset 0 0 18px rgba(232, 201, 106, 0.06);
+}
+.fantasy-main__btn-group .fantasy-btn:last-child {
+  font-size: 0.92rem;
+  padding: 11px 28px;
+  opacity: 0.7;
+  border-color: rgba(157, 110, 207, 0.35);
+  color: #b89fd4;
+  -webkit-text-fill-color: #b89fd4;
+}
+
+/* 2-B 소환기록 — 여신 대사 박스 등장 */
+.goddess-interview__dialogue {
+  animation: goddess-dialogue-in 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+@keyframes goddess-dialogue-in {
+  from { opacity: 0; transform: scale(0.97) translateY(6px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* 2-B 문답 시작 버튼 골드 펄스 링 */
+.goddess-interview__submit--step2 {
+  position: relative;
+}
+.goddess-interview__submit--step2::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 12px;
+  border: 1px solid rgba(232, 201, 106, 0.4);
+  animation: goddess-submit-ring 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes goddess-submit-ring {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50%      { opacity: 0.7; transform: scale(1.02); }
+}
+
+/* 2-C 진행바 강화 */
+.fantasy-quiz__progress-track { height: 3px; }
+.fantasy-quiz__progress-fill {
+  box-shadow: 0 0 8px rgba(245, 200, 66, 0.6);
+}
+
+/* 2-D 결과 일러스트 등장 */
+.fantasy-result__right-image {
+  opacity: 0;
+  animation: result-image-in 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.3s forwards;
+}
+@keyframes result-image-in {
+  from { opacity: 0; transform: translateY(20px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* 2-D 모바일 결과 보정 */
+@media (max-width: 480px) {
+  .fantasy-result__illustration-frame {
+    max-width: 280px;
+  }
+  .fantasy-result__btn-row > .fantasy-btn {
+    font-size: 0.88rem;
+    padding: 10px 8px;
+    letter-spacing: 0.04em;
+  }
+}
+
+/* 2-E 도감 상세 패널 등장 */
+.fantasy-guide__main-view {
+  animation: fantasy-guide-detail-in 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
