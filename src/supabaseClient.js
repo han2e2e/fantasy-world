@@ -1,7 +1,15 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+// 환경변수에 섞일 수 있는 비ASCII/공백/제어문자 제거 (헤더 생성 오류 방지)
+function sanitizeEnv(value) {
+  if (value == null) return ''
+  return String(value)
+    .trim()
+    .replace(/[^\x21-\x7E]/g, '')
+}
+
+const supabaseUrl = sanitizeEnv(import.meta.env.VITE_SUPABASE_URL)
+const supabaseAnonKey = sanitizeEnv(import.meta.env.VITE_SUPABASE_ANON_KEY)
 
 export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey)
 
