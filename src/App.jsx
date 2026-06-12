@@ -283,13 +283,13 @@ function App() {
   const [jobListShowDetail, setJobListShowDetail] = useState(false)
   const [isAwakening, setIsAwakening] = useState(false)
   const [awakeningPhase, setAwakeningPhase] = useState(0)
-  const [userChoices, setUserChoices] = useState([])
+  const [answers, setAnswers] = useState([])
   const [responseId, setResponseId] = useState(null)
   const [interviewStep, setInterviewStep] = useState('step1')
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false)
   const scoresRef = useRef(INITIAL_SCORES)
   const currentIdxRef = useRef(0)
-  const userChoicesRef = useRef([])
+  const answersRef = useRef([])
   const awakeningTimersRef = useRef([])
   const {
     playSelectSound,
@@ -390,8 +390,8 @@ function App() {
     setHasCompletedQuiz(false)
     setIsAwakening(false)
     setAwakeningPhase(0)
-    userChoicesRef.current = []
-    setUserChoices([])
+    answersRef.current = []
+    setAnswers([])
     setResponseId(null)
     awakeningTimersRef.current.forEach(clearTimeout)
     awakeningTimersRef.current = []
@@ -423,6 +423,91 @@ function App() {
     goToScreen(SCREENS.QUIZ)
   }
 
+  const finalizeQuiz = (finalAnswers) => {
+    // 모든 답을 처음부터 합산하여 점수 재계산 (뒤로 가서 답을 바꿔도 정확)
+    let computedScores = INITIAL_SCORES
+    quizList.forEach((quiz, index) => {
+      const option = finalAnswers[index]
+      if (option != null) {
+        computedScores = applyAnswerScore(quiz, option, computedScores)
+      }
+    })
+
+    scoresRef.current = computedScores
+    setScores(computedScores)
+
+    const jobKey = determineJob(computedScores)
+    const jobResult = getAbilityResult(jobKey)
+    setFinalResult({ key: jobKey, ...jobResult })
+    setHasCompletedQuiz(true)
+    setResponseId(null)
+
+    if (isSupabaseConfigured && supabase) {
+      supabase
+        .from('user_responses')
+        .insert({
+          user_name: jobResult.displayName,
+          selected_choices: finalAnswers,
+          final_scores: computedScores,
+          matched_job: jobResult.displayName,
+        })
+        .select()
+        .then(({ data, error }) => {
+          if (error) {
+            console.error('응답 저장 실패:', error)
+          } else {
+            console.log('응답 저장 성공:', data)
+            setResponseId(data?.[0]?.id ?? null)
+          }
+        })
+    }
+
+    awakeningTimersRef.current.forEach(clearTimeout)
+    awakeningTimersRef.current = []
+
+    // 마법진 연성 시퀀스 시작
+    setIsAwakening(true)
+    setAwakeningPhase(0)
+
+    // 히든 클래스(17~20)는 망치 5타 + 강화 연출 (총 3200ms)
+    const isHiddenClass = getJobTitleClass(jobKey).includes('hidden')
+
+    const normalSchedule = [
+      [0, () => { setAwakeningPhase(0); playBoomSound() }],
+      [300, () => { setAwakeningPhase(1); playHammerSound() }],
+      [700, () => { setAwakeningPhase(2); playHammerSound() }],
+      [1100, () => { setAwakeningPhase(3); playHammerSound() }],
+      [1600, () => { setAwakeningPhase(4) }],
+      [2400, () => { setAwakeningPhase(5); playCompleteSound() }],
+      [3000, () => {
+        setIsAwakening(false)
+        setAwakeningPhase(0)
+        goToScreen(SCREENS.RESULT)
+      }],
+    ]
+
+    const hiddenSchedule = [
+      [0, () => { setAwakeningPhase(0); playBoomSound() }],
+      [200, () => { setAwakeningPhase(1); playHammerSound() }],
+      [500, () => { setAwakeningPhase(2); playHammerSound() }],
+      [800, () => { setAwakeningPhase(3); playHammerSound() }],
+      [1000, () => { setAwakeningPhase(2); playHammerSound() }],
+      [1300, () => { setAwakeningPhase(3); playHammerSound() }],
+      [1700, () => { setAwakeningPhase(4) }],
+      [2300, () => { setAwakeningPhase(5); playCompleteSound() }],
+      [3200, () => {
+        setIsAwakening(false)
+        setAwakeningPhase(0)
+        goToScreen(SCREENS.RESULT)
+      }],
+    ]
+
+    const schedule = isHiddenClass ? hiddenSchedule : normalSchedule
+    schedule.forEach(([ms, fn]) => {
+      awakeningTimersRef.current.push(setTimeout(fn, ms))
+    })
+  }
+
   const handleAnswer = (optionNumber) => {
     const quizIndex = currentIdxRef.current
     const currentQuiz = quizList[quizIndex]
@@ -431,102 +516,52 @@ function App() {
 
     playSelectSound()
 
-    const nextScores = applyAnswerScore(
-      currentQuiz,
-      optionNumber,
-      scoresRef.current
-    )
-
     if (!getQuizType(currentQuiz, optionNumber)) {
       console.warn(
         `질문 ${currentQuiz.question_number}의 선택지 ${optionNumber}에 성향(type) 값이 없습니다. Supabase type${optionNumber} 컬럼을 확인하세요.`
       )
     }
 
-    scoresRef.current = nextScores
-    setScores(nextScores)
-
-    const nextChoices = [...userChoicesRef.current, optionNumber]
-    userChoicesRef.current = nextChoices
-    setUserChoices(nextChoices)
+    // 문항별로 답을 저장 (뒤로 가서 답을 바꿔도 덮어쓰기)
+    const nextAnswers = [...answersRef.current]
+    nextAnswers[quizIndex] = optionNumber
+    answersRef.current = nextAnswers
+    setAnswers(nextAnswers)
 
     if (quizIndex + 1 < quizList.length) {
       const nextIdx = quizIndex + 1
       currentIdxRef.current = nextIdx
       setCurrentIdx(nextIdx)
-    } else {
-      const jobKey = determineJob(nextScores)
-      const jobResult = getAbilityResult(jobKey)
-      setFinalResult({ key: jobKey, ...jobResult })
-      setHasCompletedQuiz(true)
-
-      setResponseId(null)
-
-      if (isSupabaseConfigured && supabase) {
-        supabase
-          .from('user_responses')
-          .insert({
-            user_name: jobResult.displayName,
-            selected_choices: nextChoices,
-            final_scores: nextScores,
-            matched_job: jobResult.displayName,
-          })
-          .select()
-          .then(({ data, error }) => {
-            if (error) {
-              console.error('응답 저장 실패:', error)
-            } else {
-              console.log('응답 저장 성공:', data)
-              setResponseId(data?.[0]?.id ?? null)
-            }
-          })
-      }
-
-      awakeningTimersRef.current.forEach(clearTimeout)
-      awakeningTimersRef.current = []
-
-      // 마법진 연성 시퀀스 시작
-      setIsAwakening(true)
-      setAwakeningPhase(0)
-
-      // 히든 클래스(17~20)는 망치 5타 + 강화 연출 (총 3200ms)
-      const isHiddenClass = getJobTitleClass(jobKey).includes('hidden')
-
-      const normalSchedule = [
-        [0, () => { setAwakeningPhase(0); playBoomSound() }],
-        [300, () => { setAwakeningPhase(1); playHammerSound() }],
-        [700, () => { setAwakeningPhase(2); playHammerSound() }],
-        [1100, () => { setAwakeningPhase(3); playHammerSound() }],
-        [1600, () => { setAwakeningPhase(4) }],
-        [2400, () => { setAwakeningPhase(5); playCompleteSound() }],
-        [3000, () => {
-          setIsAwakening(false)
-          setAwakeningPhase(0)
-          goToScreen(SCREENS.RESULT)
-        }],
-      ]
-
-      const hiddenSchedule = [
-        [0, () => { setAwakeningPhase(0); playBoomSound() }],
-        [200, () => { setAwakeningPhase(1); playHammerSound() }],
-        [500, () => { setAwakeningPhase(2); playHammerSound() }],
-        [800, () => { setAwakeningPhase(3); playHammerSound() }],
-        [1000, () => { setAwakeningPhase(2); playHammerSound() }],
-        [1300, () => { setAwakeningPhase(3); playHammerSound() }],
-        [1700, () => { setAwakeningPhase(4) }],
-        [2300, () => { setAwakeningPhase(5); playCompleteSound() }],
-        [3200, () => {
-          setIsAwakening(false)
-          setAwakeningPhase(0)
-          goToScreen(SCREENS.RESULT)
-        }],
-      ]
-
-      const schedule = isHiddenClass ? hiddenSchedule : normalSchedule
-      schedule.forEach(([ms, fn]) => {
-        awakeningTimersRef.current.push(setTimeout(fn, ms))
-      })
+      return
     }
+
+    // 마지막 문항을 답한 경우 — 빈 문항이 있으면 그쪽으로 이동, 모두 채웠으면 완료
+    const firstUnanswered = quizList.findIndex((_, i) => nextAnswers[i] == null)
+    if (firstUnanswered !== -1) {
+      currentIdxRef.current = firstUnanswered
+      setCurrentIdx(firstUnanswered)
+      return
+    }
+
+    finalizeQuiz(nextAnswers)
+  }
+
+  const handlePrevQuestion = () => {
+    const idx = currentIdxRef.current
+    if (idx <= 0) return
+    const prev = idx - 1
+    currentIdxRef.current = prev
+    setCurrentIdx(prev)
+  }
+
+  const handleNextQuestion = () => {
+    const idx = currentIdxRef.current
+    if (idx >= quizList.length - 1) return
+    // 현재 문항에 답하지 않았으면 다음으로 못 넘어감
+    if (answersRef.current[idx] == null) return
+    const next = idx + 1
+    currentIdxRef.current = next
+    setCurrentIdx(next)
   }
 
   const handleGuideSelectJob = (index) => {
@@ -614,6 +649,13 @@ function App() {
             currentIdx={currentIdx}
             totalCount={quizList.length}
             onAnswer={handleAnswer}
+            onPrev={handlePrevQuestion}
+            onNext={handleNextQuestion}
+            selectedOption={answers[currentIdx] ?? null}
+            canGoPrev={currentIdx > 0}
+            canGoNext={
+              answers[currentIdx] != null && currentIdx < quizList.length - 1
+            }
           />
         )}
 

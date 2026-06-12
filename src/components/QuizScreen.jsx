@@ -21,7 +21,17 @@ function renderQuestionLines(text) {
   )
 }
 
-function QuizScreen({ quiz, currentIdx, totalCount, onAnswer }) {
+function QuizScreen({
+  quiz,
+  currentIdx,
+  totalCount,
+  onAnswer,
+  onPrev,
+  onNext,
+  selectedOption = null,
+  canGoPrev = false,
+  canGoNext = false,
+}) {
   const isLastQuestion = currentIdx === totalCount - 1
   const displayQuestion = isLastQuestion
     ? stripLastQuestionPrefix(quiz.question)
@@ -32,6 +42,28 @@ function QuizScreen({ quiz, currentIdx, totalCount, onAnswer }) {
       key={`quiz-${quiz.question_number}-${currentIdx}`}
       className={`fantasy-quiz${isLastQuestion ? ' fantasy-quiz--last' : ''}`}
     >
+      {canGoPrev && (
+        <button
+          type="button"
+          className="fantasy-quiz__nav fantasy-quiz__nav--prev"
+          aria-label="이전 문답으로"
+          onClick={onPrev}
+        >
+          <span className="fantasy-quiz__nav-arrow">◀</span>
+        </button>
+      )}
+
+      {canGoNext && (
+        <button
+          type="button"
+          className="fantasy-quiz__nav fantasy-quiz__nav--next"
+          aria-label="다음 문답으로"
+          onClick={onNext}
+        >
+          <span className="fantasy-quiz__nav-arrow">▶</span>
+        </button>
+      )}
+
       <div className="fantasy-quiz__progress-track">
         <div
           className="fantasy-quiz__progress-fill"
@@ -53,7 +85,9 @@ function QuizScreen({ quiz, currentIdx, totalCount, onAnswer }) {
           <button
             key={`quiz-${quiz.question_number}-option-${num}`}
             type="button"
-            className="fantasy-btn fantasy-btn--glow fantasy-btn--option"
+            className={`fantasy-btn fantasy-btn--glow fantasy-btn--option ${
+              selectedOption === num ? 'is-selected' : ''
+            }`}
             onClick={() => onAnswer(num)}
           >
             <span className="fantasy-quiz__option-text">
