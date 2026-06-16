@@ -2815,13 +2815,13 @@ body,
   align-items: center;
   justify-content: flex-end;
   overflow: hidden;
+  /* PC: 가로형 키아트 풀배경 */
   background-image: url('/main-bg.jpg');
-  /* 잘림 없이 일러스트 전체가 보이도록 contain + 다크 레터박스 */
-  background-size: contain;
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-color: #08040f;
-  image-rendering: auto;
+  image-rendering: -webkit-optimize-contrast;
 }
 
 /* 하단 가독성용 어두운 그라데이션 스크림 */
@@ -2913,21 +2913,25 @@ body,
 }
 
 @media (max-width: 768px) {
-  /* 모바일: 가로형 키아트가 잘리지 않고 전체가 보이도록 contain + 다크 레터박스 */
+  /* 모바일: 세로형 전용 일러스트로 자동 전환 (꽉 채움) */
   .fantasy-main-start-zone {
-    background-size: contain;
+    background-image: url('/main-bg-mobile.jpg');
+    background-size: cover;
     background-position: center;
     background-color: #08040f;
   }
 
+  /* 버튼 — 여신 드레스 자락 하단 여백, 엄지 터치 영역 */
   .fantasy-main__actions {
-    margin-bottom: 8vh;
+    margin-bottom: 7vh;
+    gap: 12px;
   }
 
   .fantasy-main__start-btn {
-    min-width: 240px;
-    padding: 15px 44px;
-    font-size: 1.15rem;
+    min-width: 220px;
+    padding: 14px 40px;
+    font-size: 1.1rem;
+    border-width: 1.5px;
   }
 
   .fantasy-main__rules-link {
