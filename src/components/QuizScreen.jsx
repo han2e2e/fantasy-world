@@ -42,28 +42,6 @@ function QuizScreen({
       key={`quiz-${quiz.question_number}-${currentIdx}`}
       className={`fantasy-quiz${isLastQuestion ? ' fantasy-quiz--last' : ''}`}
     >
-      {canGoPrev && (
-        <button
-          type="button"
-          className="fantasy-quiz__nav fantasy-quiz__nav--prev"
-          aria-label="이전 문답으로"
-          onClick={onPrev}
-        >
-          <span className="fantasy-quiz__nav-arrow">◀</span>
-        </button>
-      )}
-
-      {canGoNext && (
-        <button
-          type="button"
-          className="fantasy-quiz__nav fantasy-quiz__nav--next"
-          aria-label="다음 문답으로"
-          onClick={onNext}
-        >
-          <span className="fantasy-quiz__nav-arrow">▶</span>
-        </button>
-      )}
-
       <div className="fantasy-quiz__progress-track">
         <div
           className="fantasy-quiz__progress-fill"
@@ -96,6 +74,32 @@ function QuizScreen({
           </button>
         ))}
       </div>
+
+      {(canGoPrev || canGoNext) && (
+        <div className="fantasy-quiz__nav-row">
+          <button
+            type="button"
+            className="fantasy-quiz__nav fantasy-quiz__nav--prev"
+            aria-label="이전 문답으로"
+            onClick={onPrev}
+            disabled={!canGoPrev}
+          >
+            <span className="fantasy-quiz__nav-arrow">◀</span>
+            <span className="fantasy-quiz__nav-text">이전</span>
+          </button>
+
+          <button
+            type="button"
+            className="fantasy-quiz__nav fantasy-quiz__nav--next"
+            aria-label="다음 문답으로"
+            onClick={onNext}
+            disabled={!canGoNext}
+          >
+            <span className="fantasy-quiz__nav-text">다음</span>
+            <span className="fantasy-quiz__nav-arrow">▶</span>
+          </button>
+        </div>
+      )}
     </section>
   )
 }
