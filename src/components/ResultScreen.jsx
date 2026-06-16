@@ -479,6 +479,20 @@ function ResultScreen({ result, onRestart, responseId = null }) {
               </div>
             )}
 
+            {!hasSubmittedReview && (
+              <p
+                style={{
+                  fontSize: '0.72rem',
+                  color: 'rgba(250, 204, 21, 0.5)',
+                  letterSpacing: '0.03em',
+                  margin: '0',
+                  textAlign: 'center',
+                }}
+              >
+                내 직업명으로 자동 설정
+              </p>
+            )}
+
             {/* 3. 유저 후기 목록 */}
             <div className="fantasy-review-modal__list">
               {userReviews.length === 0 ? (
