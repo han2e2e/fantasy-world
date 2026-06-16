@@ -472,36 +472,28 @@ function App() {
     // 히든 클래스(17~20)는 망치 5타 + 강화 연출 (총 3200ms)
     const isHiddenClass = getJobTitleClass(jobKey).includes('hidden')
 
-    // 긴장감 빌드업: 일반 직업 약 3.4초 연성 시퀀스
+    // 긴장감 빌드업: 일반 직업 약 5.0초 연성 시퀀스
     const normalSchedule = [
       [0, () => { setAwakeningPhase(0); playBoomSound() }],
-      [450, () => { setAwakeningPhase(1); playHammerSound() }],
-      [1000, () => { setAwakeningPhase(2); playHammerSound() }],
-      [1550, () => { setAwakeningPhase(3); playHammerSound() }],
-      [2250, () => { setAwakeningPhase(4) }],
-      [2850, () => { setAwakeningPhase(5); playCompleteSound() }],
-      [3400, () => {
-        setIsAwakening(false)
-        setAwakeningPhase(0)
-        goToScreen(SCREENS.RESULT)
-      }],
+      [600, () => { setAwakeningPhase(1); playHammerSound() }],
+      [1300, () => { setAwakeningPhase(2); playHammerSound() }],
+      [2100, () => { setAwakeningPhase(3); playHammerSound() }],
+      [3000, () => { setAwakeningPhase(4) }],
+      [3900, () => { setAwakeningPhase(5); playCompleteSound() }],
+      [5000, () => { setIsAwakening(false); setAwakeningPhase(0); goToScreen(SCREENS.RESULT) }],
     ]
 
-    // 히든 직업(17~20)은 망치 5타 + 강화 연출, 약 3.7초
+    // 히든 직업(17~20)은 망치 5타 + 강화 연출, 약 5.5초
     const hiddenSchedule = [
       [0, () => { setAwakeningPhase(0); playBoomSound() }],
-      [400, () => { setAwakeningPhase(1); playHammerSound() }],
-      [800, () => { setAwakeningPhase(2); playHammerSound() }],
-      [1200, () => { setAwakeningPhase(3); playHammerSound() }],
-      [1600, () => { setAwakeningPhase(2); playHammerSound() }],
-      [2050, () => { setAwakeningPhase(3); playHammerSound() }],
-      [2550, () => { setAwakeningPhase(4) }],
-      [3150, () => { setAwakeningPhase(5); playCompleteSound() }],
-      [3700, () => {
-        setIsAwakening(false)
-        setAwakeningPhase(0)
-        goToScreen(SCREENS.RESULT)
-      }],
+      [500, () => { setAwakeningPhase(1); playHammerSound() }],
+      [950, () => { setAwakeningPhase(2); playHammerSound() }],
+      [1400, () => { setAwakeningPhase(3); playHammerSound() }],
+      [1850, () => { setAwakeningPhase(2); playHammerSound() }],
+      [2350, () => { setAwakeningPhase(3); playHammerSound() }],
+      [2950, () => { setAwakeningPhase(4) }],
+      [3800, () => { setAwakeningPhase(5); playCompleteSound() }],
+      [5500, () => { setIsAwakening(false); setAwakeningPhase(0); goToScreen(SCREENS.RESULT) }],
     ]
 
     const schedule = isHiddenClass ? hiddenSchedule : normalSchedule
@@ -674,6 +666,7 @@ function App() {
         <AwakeningOverlay
           phase={awakeningPhase}
           jobTitleClass={finalResult ? getJobTitleClass(finalResult.key) : ''}
+          jobName={finalResult ? finalResult.displayName : ''}
         />
       )}
 
