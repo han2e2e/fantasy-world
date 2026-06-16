@@ -2819,8 +2819,8 @@ body,
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
+  /* 일러스트는 부드러운 보간이 더 깔끔 (crisp-edges는 계단현상 유발) */
+  image-rendering: auto;
 }
 
 /* 하단 가독성용 어두운 그라데이션 스크림 */
