@@ -284,6 +284,7 @@ function App() {
   const [isAwakening, setIsAwakening] = useState(false)
   const [awakeningPhase, setAwakeningPhase] = useState(0)
   const [answers, setAnswers] = useState([])
+  const [jumpNotice, setJumpNotice] = useState(false)
   const [responseId, setResponseId] = useState(null)
   const [interviewStep, setInterviewStep] = useState('step1')
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false)
@@ -533,6 +534,8 @@ function App() {
     // 마지막 문항을 답한 경우 — 빈 문항이 있으면 그쪽으로 이동, 모두 채웠으면 완료
     const firstUnanswered = quizList.findIndex((_, i) => nextAnswers[i] == null)
     if (firstUnanswered !== -1) {
+      setJumpNotice(true)
+      setTimeout(() => setJumpNotice(false), 2200)
       currentIdxRef.current = firstUnanswered
       setCurrentIdx(firstUnanswered)
       return
@@ -643,6 +646,8 @@ function App() {
             quiz={activeQuiz}
             currentIdx={currentIdx}
             totalCount={quizList.length}
+            answeredCount={answers.filter((a) => a != null).length}
+            jumpNotice={jumpNotice}
             onAnswer={handleAnswer}
             onPrev={handlePrevQuestion}
             onNext={handleNextQuestion}

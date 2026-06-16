@@ -25,6 +25,8 @@ function QuizScreen({
   quiz,
   currentIdx,
   totalCount,
+  answeredCount = 0,
+  jumpNotice = false,
   onAnswer,
   onPrev,
   onNext,
@@ -45,9 +47,24 @@ function QuizScreen({
       <div className="fantasy-quiz__progress-track">
         <div
           className="fantasy-quiz__progress-fill"
-          style={{ width: `${(currentIdx / totalCount) * 100}%` }}
+          style={{ width: `${(answeredCount / totalCount) * 100}%` }}
         />
       </div>
+
+      {jumpNotice && (
+        <p
+          style={{
+            fontFamily: "'Noto Serif KR', serif",
+            fontSize: '0.85rem',
+            color: '#ff9a9e',
+            letterSpacing: '0.05em',
+            marginBottom: '12px',
+            animation: 'fadeInOut 2.2s ease forwards',
+          }}
+        >
+          ✦ 아직 답하지 않은 문항이 있습니다
+        </p>
+      )}
 
       <span className="fantasy-quiz__label">
         ㅡ 제 {quiz.question_number} 문답 ㅡ

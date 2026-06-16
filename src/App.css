@@ -284,140 +284,140 @@ body,
   right: -22px;
 }
 
-.fantasy-result__left-content:has(.title-combat-1) .fantasy-result__badge,
+.fantasy-result-layout:has(.title-combat-1) .fantasy-result__badge,
 .fantasy-guide__info-panel:has(.title-combat-1) .fantasy-guide__badge {
   color: #60b8ff;
   border-color: rgba(96, 184, 255, 0.4);
   background: rgba(96, 184, 255, 0.08);
 }
 
-.fantasy-result__left-content:has(.title-combat-2) .fantasy-result__badge,
+.fantasy-result-layout:has(.title-combat-2) .fantasy-result__badge,
 .fantasy-guide__info-panel:has(.title-combat-2) .fantasy-guide__badge {
   color: #ff6b35;
   border-color: rgba(255, 107, 53, 0.4);
   background: rgba(255, 107, 53, 0.08);
 }
 
-.fantasy-result__left-content:has(.title-combat-3) .fantasy-result__badge,
+.fantasy-result-layout:has(.title-combat-3) .fantasy-result__badge,
 .fantasy-guide__info-panel:has(.title-combat-3) .fantasy-guide__badge {
   color: #4a9eff;
   border-color: rgba(74, 158, 255, 0.4);
   background: rgba(74, 158, 255, 0.08);
 }
 
-.fantasy-result__left-content:has(.title-combat-4) .fantasy-result__badge,
+.fantasy-result-layout:has(.title-combat-4) .fantasy-result__badge,
 .fantasy-guide__info-panel:has(.title-combat-4) .fantasy-guide__badge {
   color: #ffd700;
   border-color: rgba(255, 215, 0, 0.4);
   background: rgba(255, 215, 0, 0.08);
 }
 
-.fantasy-result__left-content:has(.title-strategy-5) .fantasy-result__badge,
+.fantasy-result-layout:has(.title-strategy-5) .fantasy-result__badge,
 .fantasy-guide__info-panel:has(.title-strategy-5) .fantasy-guide__badge {
   color: #9b59b6;
   border-color: rgba(155, 89, 182, 0.4);
   background: rgba(155, 89, 182, 0.08);
 }
 
-.fantasy-result__left-content:has(.title-strategy-6) .fantasy-result__badge,
+.fantasy-result-layout:has(.title-strategy-6) .fantasy-result__badge,
 .fantasy-guide__info-panel:has(.title-strategy-6) .fantasy-guide__badge {
   color: #dfe6e9;
   border-color: rgba(223, 230, 233, 0.4);
   background: rgba(223, 230, 233, 0.08);
 }
 
-.fantasy-result__left-content:has(.title-strategy-7) .fantasy-result__badge,
+.fantasy-result-layout:has(.title-strategy-7) .fantasy-result__badge,
 .fantasy-guide__info-panel:has(.title-strategy-7) .fantasy-guide__badge {
   color: #00b894;
   border-color: rgba(0, 184, 148, 0.4);
   background: rgba(0, 184, 148, 0.08);
 }
 
-.fantasy-result__left-content:has(.title-strategy-8) .fantasy-result__badge,
+.fantasy-result-layout:has(.title-strategy-8) .fantasy-result__badge,
 .fantasy-guide__info-panel:has(.title-strategy-8) .fantasy-guide__badge {
   color: #a29bfe;
   border-color: rgba(162, 155, 254, 0.4);
   background: rgba(162, 155, 254, 0.08);
 }
 
-.fantasy-result__left-content:has(.title-survival-9) .fantasy-result__badge,
+.fantasy-result-layout:has(.title-survival-9) .fantasy-result__badge,
 .fantasy-guide__info-panel:has(.title-survival-9) .fantasy-guide__badge {
   color: #e056a0;
   border-color: rgba(224, 86, 160, 0.4);
   background: rgba(224, 86, 160, 0.08);
 }
 
-.fantasy-result__left-content:has(.title-survival-10) .fantasy-result__badge,
+.fantasy-result-layout:has(.title-survival-10) .fantasy-result__badge,
 .fantasy-guide__info-panel:has(.title-survival-10) .fantasy-guide__badge {
   color: #74b9ff;
   border-color: rgba(116, 185, 255, 0.4);
   background: rgba(116, 185, 255, 0.08);
 }
 
-.fantasy-result__left-content:has(.title-survival-11) .fantasy-result__badge,
+.fantasy-result-layout:has(.title-survival-11) .fantasy-result__badge,
 .fantasy-guide__info-panel:has(.title-survival-11) .fantasy-guide__badge {
   color: #f9ca24;
   border-color: rgba(249, 202, 36, 0.4);
   background: rgba(249, 202, 36, 0.08);
 }
 
-.fantasy-result__left-content:has(.title-survival-12) .fantasy-result__badge,
+.fantasy-result-layout:has(.title-survival-12) .fantasy-result__badge,
 .fantasy-guide__info-panel:has(.title-survival-12) .fantasy-guide__badge {
   color: #ffffff;
   border-color: rgba(255, 255, 255, 0.3);
   background: rgba(255, 255, 255, 0.05);
 }
 
-.fantasy-result__left-content:has(.title-modern-13) .fantasy-result__badge,
+.fantasy-result-layout:has(.title-modern-13) .fantasy-result__badge,
 .fantasy-guide__info-panel:has(.title-modern-13) .fantasy-guide__badge {
   color: #00cec9;
   border-color: rgba(0, 206, 201, 0.4);
   background: rgba(0, 206, 201, 0.08);
 }
 
-.fantasy-result__left-content:has(.title-modern-14) .fantasy-result__badge,
+.fantasy-result-layout:has(.title-modern-14) .fantasy-result__badge,
 .fantasy-guide__info-panel:has(.title-modern-14) .fantasy-guide__badge {
   color: #fd9644;
   border-color: rgba(253, 150, 68, 0.4);
   background: rgba(253, 150, 68, 0.08);
 }
 
-.fantasy-result__left-content:has(.title-modern-15) .fantasy-result__badge,
+.fantasy-result-layout:has(.title-modern-15) .fantasy-result__badge,
 .fantasy-guide__info-panel:has(.title-modern-15) .fantasy-guide__badge {
   color: #74b9ff;
   border-color: rgba(116, 185, 255, 0.4);
   background: rgba(116, 185, 255, 0.08);
 }
 
-.fantasy-result__left-content:has(.title-modern-16) .fantasy-result__badge,
+.fantasy-result-layout:has(.title-modern-16) .fantasy-result__badge,
 .fantasy-guide__info-panel:has(.title-modern-16) .fantasy-guide__badge {
   color: #a29bfe;
   border-color: rgba(162, 155, 254, 0.4);
   background: rgba(162, 155, 254, 0.08);
 }
 
-.fantasy-result__left-content:has(.title-hidden-17) .fantasy-result__badge,
+.fantasy-result-layout:has(.title-hidden-17) .fantasy-result__badge,
 .fantasy-guide__info-panel:has(.title-hidden-17) .fantasy-guide__badge {
   color: #ff0057;
   border-color: rgba(255, 0, 87, 0.4);
   background: rgba(255, 0, 87, 0.08);
 }
 
-.fantasy-result__left-content:has(.title-hidden-18) .fantasy-result__badge,
+.fantasy-result-layout:has(.title-hidden-18) .fantasy-result__badge,
 .fantasy-guide__info-panel:has(.title-hidden-18) .fantasy-guide__badge {
   color: #e5c158;
   border-color: rgba(229, 193, 88, 0.35);
   background: rgba(229, 193, 88, 0.06);
 }
 
-.fantasy-result__left-content:has(.title-hidden-19) .fantasy-result__badge,
+.fantasy-result-layout:has(.title-hidden-19) .fantasy-result__badge,
 .fantasy-guide__info-panel:has(.title-hidden-19) .fantasy-guide__badge {
   color: #d4ff70;
   border-color: rgba(212, 255, 112, 0.4);
   background: rgba(212, 255, 112, 0.08);
 }
 
-.fantasy-result__left-content:has(.title-hidden-20) .fantasy-result__badge,
+.fantasy-result-layout:has(.title-hidden-20) .fantasy-result__badge,
 .fantasy-guide__info-panel:has(.title-hidden-20) .fantasy-guide__badge {
   color: #ffffff;
   border-color: rgba(191, 90, 242, 0.5);
@@ -2632,10 +2632,10 @@ body,
     gap: 10px;
   }
 
+  /* left-content를 풀어 자식들을 부모 플렉스 아이템으로 승격 → 일러스트를 사이에 끼워넣기 */
+  /* (배지 :has 셀렉터는 .fantasy-result-layout 기준으로 옮겨 영향 없음) */
   .fantasy-result__left-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: contents;
   }
 
   .fantasy-result__header {
@@ -4112,6 +4112,13 @@ body,
 @keyframes text-pulse {
   0%, 100% { opacity: 0.3; transform: scale(0.98); }
   50%      { opacity: 1;   transform: scale(1.02); }
+}
+
+@keyframes fadeInOut {
+  0%   { opacity: 0; transform: translateY(-6px); }
+  15%  { opacity: 1; transform: translateY(0); }
+  75%  { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 .forge-charging-text--critical {
