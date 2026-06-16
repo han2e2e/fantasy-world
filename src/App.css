@@ -2624,19 +2624,36 @@ body,
 }
 
 @media (max-width: 768px) {
+  /* 모바일 노출 순서 재배치: 1.클래스명 → 2.일러스트 → 3.성향설명 → 4.버튼 */
   .fantasy-result-layout {
-    flex-direction: column-reverse;
+    flex-direction: column;
+    align-items: center;
     padding: 10px 12px;
     gap: 10px;
   }
 
+  /* left-content 박스를 풀어 자식들을 부모 플렉스 아이템으로 승격 → order 제어 가능 */
   .fantasy-result__left-content {
-    gap: 9px;
+    display: contents;
+  }
+
+  .fantasy-result__header {
+    order: 1;
+    width: 100%;
+  }
+
+  .fantasy-result__right-image {
+    order: 2;
   }
 
   .fantasy-result__personality-box {
+    order: 3;
     max-width: 100%;
     padding: 0 2px;
+  }
+
+  .fantasy-result__buttons {
+    order: 4;
   }
 
   /* 모바일: 설명 텍스트 압축 — 한 화면에 더 많이 들어오게 */
