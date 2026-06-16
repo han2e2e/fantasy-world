@@ -2199,6 +2199,67 @@ body,
   text-shadow: 0 0 8px rgba(250, 204, 21, 0.3);
 }
 
+/* 모바일: 능력 설명 팝업을 화면 정중앙 전체화면 고정 + 압축 레이아웃 */
+@media (max-width: 768px) {
+  .fantasy-ability-modal {
+    /* 배경 오버레이: 스크롤 위치와 무관하게 화면 전체 덮기 */
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    padding: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .fantasy-ability-modal__card {
+    /* 유저가 어디서 눌렀든 현재 화면 정중앙에 락 */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10000;
+    width: 90vw;
+    max-width: 420px;
+    max-height: 85vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    /* 여백 슬림하게 */
+    padding: 28px 18px 20px;
+    border-radius: 14px;
+    /* fixed 전환 시 rise 애니메이션이 translate를 덮어쓰지 않도록 fade만 사용 */
+    animation: fantasy-modal-fade-in 0.28s ease-out forwards;
+  }
+
+  .fantasy-ability-modal__close {
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    font-size: 1.3rem;
+  }
+
+  .fantasy-ability-modal__title-wrap {
+    margin-bottom: 12px;
+  }
+
+  .fantasy-ability-modal__title {
+    font-size: clamp(1.45rem, 7vw, 1.8rem);
+    line-height: 1.25;
+  }
+
+  .fantasy-ability-modal__desc-para {
+    margin: 0 0 0.6rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    letter-spacing: 0;
+  }
+
+  .fantasy-ability-modal__desc-para:last-child {
+    margin-bottom: 0;
+  }
+}
+
 @keyframes fantasy-modal-fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
