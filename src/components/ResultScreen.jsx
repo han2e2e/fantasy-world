@@ -77,6 +77,11 @@ function ResultScreen({ result, onRestart, responseId = null }) {
 
   const reviewerName = result.displayName
 
+  // 결과 화면 진입 시 무조건 페이지 맨 위로 (모바일에서 하단 스크롤 잔류 방지)
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [])
+
   useEffect(() => {
     try {
       localStorage.setItem(MY_REVIEWS_STORAGE_KEY, JSON.stringify(myReviewIds))

@@ -2565,12 +2565,12 @@ body,
 @media (max-width: 768px) {
   .fantasy-result-layout {
     flex-direction: column-reverse;
-    padding: 14px 16px;
-    gap: 14px;
+    padding: 10px 12px;
+    gap: 10px;
   }
 
   .fantasy-result__left-content {
-    gap: 12px;
+    gap: 9px;
   }
 
   .fantasy-result__personality-box {
@@ -2578,10 +2578,11 @@ body,
     padding: 0 2px;
   }
 
+  /* 모바일: 설명 텍스트 압축 — 한 화면에 더 많이 들어오게 */
   .fantasy-result__personality-para {
-    margin-bottom: 0.6rem;
-    font-size: 0.92rem;
-    line-height: 1.65;
+    margin-bottom: 0.45rem;
+    font-size: 0.86rem;
+    line-height: 1.55;
     letter-spacing: 0;
     /* 모바일: 양끝정렬 금지 → 단어 간격 벌어짐 방지, 중앙 정렬 */
     text-align: center;
