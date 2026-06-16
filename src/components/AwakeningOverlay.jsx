@@ -186,7 +186,7 @@ function MagicCircleSVG({ phase, color }) {
   )
 }
 
-function AwakeningOverlay({ phase, jobName, jobTitleClass }) {
+function AwakeningOverlay({ phase, jobTitleClass }) {
   // phase가 없으면(null/undefined) 아무것도 렌더링하지 않음
   if (phase === null || phase === undefined) return null
 
@@ -232,16 +232,6 @@ function AwakeningOverlay({ phase, jobName, jobTitleClass }) {
         }}
       >
         <MagicCircleSVG phase={phase} color={color} />
-      </div>
-
-      <div className={`forge-class-reveal ${phase >= 4 ? 'forge-class-reveal--visible' : ''}`}>
-        <p className="forge-class-label">이능력 각성</p>
-        <p
-          className={`forge-class-name ${jobTitleClass ?? ''}`}
-          style={{ '--forge-primary': color.primary }}
-        >
-          {jobName}
-        </p>
       </div>
 
       <div className={`forge-flash ${phase >= 5 ? 'forge-flash--active' : ''}`} />

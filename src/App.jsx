@@ -671,7 +671,6 @@ function App() {
       {isAwakening && (
         <AwakeningOverlay
           phase={awakeningPhase}
-          jobName={finalResult?.displayName ?? ''}
           jobTitleClass={finalResult ? getJobTitleClass(finalResult.key) : ''}
         />
       )}
