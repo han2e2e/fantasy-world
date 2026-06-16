@@ -3422,20 +3422,23 @@ body,
 }
 
 /* 우측 하단 제작자 크레딧 (메인 · 결과 화면 공통) */
+/* 화면 고정 해제 → 문서 흐름상 페이지 최하단 우측에 정적으로 마감 (버튼과 겹침 방지) */
 .fantasy-author-credit {
-  position: fixed;
-  right: 16px;
-  bottom: 16px;
-  z-index: 9999;
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
   margin: 0;
-  padding: 4px 8px;
+  margin-top: 28px;
+  padding: 12px 18px calc(14px + env(safe-area-inset-bottom, 0px));
   border: none;
   background: transparent;
   font-family: 'Noto Serif KR', serif;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.08em;
-  color: #e8c96a;
+  color: rgba(232, 201, 106, 0.7);
+  text-align: right;
   text-shadow:
     0 0 8px rgba(0, 0, 0, 0.65),
     0 0 14px rgba(232, 201, 106, 0.2);
@@ -3459,24 +3462,15 @@ body,
   transform: scale(1.05);
 }
 
-/* 모바일: PC처럼 우측 하단 고정 유지하되, 하단 내비/툴바에 가리지 않게 safe-area 확보 */
+/* 모바일: 동일하게 정적 흐름 유지 — 페이지 끝까지 내렸을 때만 우측 하단에 등장 */
 @media (max-width: 768px) {
   .fantasy-author-credit {
-    position: fixed;
-    right: 12px;
-    /* 모바일 하단 툴바/제스처 바 영역 회피 */
-    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-    left: auto;
-    width: auto;
-    z-index: 9998;
-    margin: 0;
-    padding: 3px 7px;
-    text-align: right;
+    margin-top: 22px;
+    padding: 12px 14px calc(16px + env(safe-area-inset-bottom, 0px));
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.05em;
-    color: rgba(232, 201, 106, 0.78);
-    text-shadow: 0 0 6px rgba(0, 0, 0, 0.85);
+    color: rgba(232, 201, 106, 0.7);
   }
 
   .fantasy-author-credit--clickable:hover {
