@@ -2816,10 +2816,11 @@ body,
   justify-content: flex-end;
   overflow: hidden;
   background-image: url('/main-bg.jpg');
-  background-size: cover;
+  /* 잘림 없이 일러스트 전체가 보이도록 contain + 다크 레터박스 */
+  background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  /* 일러스트는 부드러운 보간이 더 깔끔 (crisp-edges는 계단현상 유발) */
+  background-color: #08040f;
   image-rendering: auto;
 }
 
