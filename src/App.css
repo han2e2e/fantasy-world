@@ -2912,12 +2912,15 @@ body,
 }
 
 @media (max-width: 768px) {
+  /* 모바일: 가로형 키아트가 잘리지 않고 전체가 보이도록 contain + 다크 레터박스 */
   .fantasy-main-start-zone {
+    background-size: contain;
     background-position: center;
+    background-color: #08040f;
   }
 
   .fantasy-main__actions {
-    margin-bottom: 7vh;
+    margin-bottom: 8vh;
   }
 
   .fantasy-main__start-btn {
