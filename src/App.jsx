@@ -704,7 +704,7 @@ function App() {
             <p className="fantasy-comment-modal__body leading-relaxed tracking-wide text-left">
               재밌게 플레이해주셔서 감사합니다.
               <br />
-              더 좋은 피드백 제안은 dlgks888g@naver.com로 남겨주세요!
+              더 좋은 피드백 제안은 dlgks888@naver.com로 남겨주세요!
             </p>
 
             <button
