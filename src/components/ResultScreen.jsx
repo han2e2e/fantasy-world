@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import {
   getJobImageSrc,
   getJobTitleClass,
@@ -77,10 +78,11 @@ function ResultScreen({ result, onRestart, responseId = null }) {
 
   const reviewerName = result.displayName
 
-  // 결과 화면 진입 시 무조건 페이지 맨 위로 (모바일에서 하단 스크롤 잔류 방지)
+  // 결과 화면 진입 + 직업 전환(viewResult.key 변경) 시마다 무조건 페이지 맨 위로
+  // (직업목록에서 다른 직업 선택 시 이전 스크롤 위치 잔류 방지)
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [])
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [viewResult.key])
 
   useEffect(() => {
     try {
@@ -306,7 +308,7 @@ function ResultScreen({ result, onRestart, responseId = null }) {
         </div>
       </div>
 
-      {isModalOpen && (
+      {isModalOpen && createPortal(
         <div
           className="fantasy-ability-modal"
           role="dialog"
@@ -347,10 +349,11 @@ function ResultScreen({ result, onRestart, responseId = null }) {
               ))}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
-      {isJobListModalOpen && (
+      {isJobListModalOpen && createPortal(
         <div
           className="fantasy-ability-modal fantasy-joblist-modal"
           role="dialog"
@@ -396,10 +399,11 @@ function ResultScreen({ result, onRestart, responseId = null }) {
               ))}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
-      {isReviewModalOpen && (
+      {isReviewModalOpen && createPortal(
         <div
           className="fantasy-ability-modal fantasy-review-modal"
           role="dialog"
@@ -547,7 +551,8 @@ function ResultScreen({ result, onRestart, responseId = null }) {
               </div>
             )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </section>
   )
