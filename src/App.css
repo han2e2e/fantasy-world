@@ -2624,7 +2624,7 @@ body,
 }
 
 @media (max-width: 768px) {
-  /* 모바일 노출 순서 재배치: 1.클래스명 → 2.일러스트 → 3.성향설명 → 4.버튼 */
+  /* 모바일 노출 순서 재배치 (order 위임) — :has() 배지 셀렉터 보존을 위해 display:contents 제거 */
   .fantasy-result-layout {
     flex-direction: column;
     align-items: center;
@@ -2632,9 +2632,10 @@ body,
     gap: 10px;
   }
 
-  /* left-content 박스를 풀어 자식들을 부모 플렉스 아이템으로 승격 → order 제어 가능 */
   .fantasy-result__left-content {
-    display: contents;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .fantasy-result__header {
@@ -3954,10 +3955,11 @@ body,
   align-items: center;
   justify-content: center;
   gap: 28px;
-  background: var(--mc-bg, #020c18);
+  background-color: var(--mc-bg, #020c18);
   overflow: hidden;
   color: var(--mc, #4dd9ff);
   animation: forge-overlay-in 0.4s ease forwards;
+  transition: background-color 0.8s ease, color 0.8s ease;
 }
 
 @keyframes forge-overlay-in {
@@ -4020,6 +4022,13 @@ body,
   width: 100%;
   height: 100%;
   overflow: visible;
+}
+
+/* phase가 바뀌며 --mc가 변할 때 stroke/fill을 부드럽게 전환 (모든 레이어) */
+.forge-circle-wrap svg circle,
+.forge-circle-wrap svg polygon,
+.forge-circle-wrap svg line {
+  transition: stroke 0.8s ease, fill 0.8s ease;
 }
 
 .forge-circle-wrap.hammer-hit { animation: hammer-hit 0.22s ease-out; }
@@ -4105,6 +4114,16 @@ body,
   50%      { opacity: 1;   transform: scale(1.02); }
 }
 
+.forge-charging-text--critical {
+  animation: text-pulse-fast 0.55s ease-in-out infinite;
+  letter-spacing: 0.35em;
+}
+
+@keyframes text-pulse-fast {
+  0%, 100% { opacity: 0.2; transform: scale(0.97); }
+  50%      { opacity: 1;   transform: scale(1.04); }
+}
+
 .forge-complete-block {
   display: flex;
   flex-direction: column;
@@ -4126,7 +4145,7 @@ body,
 }
 
 .forge-overlay--hidden .forge-class-name {
-  text-shadow: 0 0 30px rgba(191, 90, 242, 0.9), 0 0 60px rgba(191, 90, 242, 0.4);
+  text-shadow: 0 0 30px var(--mc-glow), 0 0 60px var(--mc-glow);
 }
 
 .forge-complete-label {

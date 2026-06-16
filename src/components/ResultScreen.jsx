@@ -78,6 +78,13 @@ function ResultScreen({ result, onRestart, responseId = null }) {
 
   const reviewerName = result.displayName
 
+  // 일러스트 미리 로드 (연성 중 백그라운드 렌더 시 깜빡임 방지)
+  useEffect(() => {
+    if (!result?.image) return
+    const img = new Image()
+    img.src = result.image
+  }, [result?.image])
+
   // 결과 화면 진입 + 직업 전환(viewResult.key 변경) 시마다 무조건 페이지 맨 위로
   // (직업목록에서 다른 직업 선택 시 이전 스크롤 위치 잔류 방지)
   useEffect(() => {

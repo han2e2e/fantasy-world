@@ -424,6 +424,7 @@ function App() {
   }
 
   const finalizeQuiz = (finalAnswers) => {
+    if (isAwakening) return
     // 모든 답을 처음부터 합산하여 점수 재계산 (뒤로 가서 답을 바꿔도 정확)
     let computedScores = INITIAL_SCORES
     quizList.forEach((quiz, index) => {
@@ -653,12 +654,22 @@ function App() {
           />
         )}
 
-        {screen === SCREENS.RESULT && finalResult && (
-          <ResultScreen
-            result={finalResult}
-            onRestart={handleRestart}
-            responseId={responseId}
-          />
+        {finalResult && (
+          <div
+            style={{
+              position: isAwakening ? 'fixed' : 'static',
+              visibility: isAwakening ? 'hidden' : 'visible',
+              inset: isAwakening ? 0 : 'auto',
+              zIndex: isAwakening ? -1 : 'auto',
+              pointerEvents: isAwakening ? 'none' : 'auto',
+            }}
+          >
+            <ResultScreen
+              result={finalResult}
+              onRestart={handleRestart}
+              responseId={responseId}
+            />
+          </div>
         )}
       </main>
 

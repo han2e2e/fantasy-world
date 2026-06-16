@@ -1,5 +1,46 @@
 import { useEffect, useRef, useState } from 'react'
 
+// ── 직업 고유 색상 매핑 ──
+function getColorFromTitleClass(titleClass) {
+  const map = {
+    'title-combat-1': { primary: '#60b8ff', glow: 'rgba(96,184,255,0.85)', bg: '#020c18' },
+    'title-combat-2': { primary: '#ff6b35', glow: 'rgba(255,107,53,0.85)', bg: '#140600' },
+    'title-combat-3': { primary: '#4a9eff', glow: 'rgba(74,158,255,0.85)', bg: '#020c18' },
+    'title-combat-4': { primary: '#ffd700', glow: 'rgba(255,215,0,0.85)', bg: '#120e00' },
+    'title-strategy-5': { primary: '#9b59b6', glow: 'rgba(155,89,182,0.85)', bg: '#0a0214' },
+    'title-strategy-6': { primary: '#dfe6e9', glow: 'rgba(223,230,233,0.8)', bg: '#08080a' },
+    'title-strategy-7': { primary: '#00b894', glow: 'rgba(0,184,148,0.85)', bg: '#001a12' },
+    'title-strategy-8': { primary: '#a29bfe', glow: 'rgba(162,155,254,0.85)', bg: '#060214' },
+    'title-survival-9': { primary: '#e056a0', glow: 'rgba(224,86,160,0.85)', bg: '#140010' },
+    'title-survival-10': { primary: '#74b9ff', glow: 'rgba(116,185,255,0.85)', bg: '#020c18' },
+    'title-survival-11': { primary: '#f9ca24', glow: 'rgba(249,202,36,0.85)', bg: '#120e00' },
+    'title-survival-12': { primary: '#d0e8f0', glow: 'rgba(208,232,240,0.75)', bg: '#080c10' },
+    'title-modern-13': { primary: '#00cec9', glow: 'rgba(0,206,201,0.85)', bg: '#001a1a' },
+    'title-modern-14': { primary: '#fd9644', glow: 'rgba(253,150,68,0.85)', bg: '#120600' },
+    'title-modern-15': { primary: '#74b9ff', glow: 'rgba(116,185,255,0.85)', bg: '#020c18' },
+    'title-modern-16': { primary: '#a29bfe', glow: 'rgba(162,155,254,0.85)', bg: '#060214' },
+    'title-hidden-17': { primary: '#ff0057', glow: 'rgba(255,0,87,0.9)', bg: '#140010' },
+    'title-hidden-18': { primary: '#e5c158', glow: 'rgba(229,193,88,0.9)', bg: '#120e00' },
+    'title-hidden-19': { primary: '#d4ff70', glow: 'rgba(212,255,112,0.9)', bg: '#0a1400' },
+    'title-hidden-20': { primary: '#bf5af2', glow: 'rgba(191,90,242,0.9)', bg: '#08020f' },
+  }
+  return map[titleClass] ?? { primary: '#4dd9ff', glow: 'rgba(77,217,255,0.8)', bg: '#020c18' }
+}
+
+// 두 HEX 색상을 t(0~1) 비율로 보간
+function blendHex(hexA, hexB, t) {
+  const parse = (h) => {
+    const c = h.replace('#', '')
+    return [parseInt(c.slice(0, 2), 16), parseInt(c.slice(2, 4), 16), parseInt(c.slice(4, 6), 16)]
+  }
+  const [ar, ag, ab] = parse(hexA)
+  const [br, bg, bb] = parse(hexB)
+  const r = Math.round(ar + (br - ar) * t)
+  const g = Math.round(ag + (bg - ag) * t)
+  const b = Math.round(ab + (bb - ab) * t)
+  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
+}
+
 // ── 기하 헬퍼 (중심은 translate(300,300) 이후의 0,0 기준) ──
 function polyPoints(n, r, rot = 0) {
   return Array.from({ length: n }, (_, i) => {
@@ -340,12 +381,37 @@ function AwakeningOverlay({ phase, jobTitleClass, jobName }) {
   if (phase === null || phase === undefined) return null
 
   const isHidden = jobTitleClass ? jobTitleClass.includes('hidden') : false
-
-  const cssVars = isHidden
-    ? { '--mc': '#bf5af2', '--mc-glow': 'rgba(191,90,242,0.9)', '--mc-bg': '#08020f' }
-    : { '--mc': '#4dd9ff', '--mc-glow': 'rgba(77,217,255,0.85)', '--mc-bg': '#020c18' }
-
   const safePhase = Math.min(Math.max(phase, 0), 5)
+
+  // phase가 올라갈수록 무채색 → 직업 고유 색상으로 물들어감 (phase5 = 100% 확정)
+  const targetColor = getColorFromTitleClass(jobTitleClass)
+  const colorByPhase = {
+    0: { primary: '#a0b4c8', glow: 'rgba(160,180,200,0.5)', bg: '#060810' },
+    1: { primary: '#7ab8d4', glow: 'rgba(120,184,212,0.6)', bg: '#060810' },
+    2: {
+      primary: blendHex('#7ab8d4', targetColor.primary, 0.5),
+      glow: targetColor.glow.replace(/[\d.]+\)$/, '0.65)'),
+      bg: '#060810',
+    },
+    3: {
+      primary: blendHex('#7ab8d4', targetColor.primary, 0.8),
+      glow: targetColor.glow.replace(/[\d.]+\)$/, '0.78)'),
+      bg: blendHex('#060810', targetColor.bg, 0.5),
+    },
+    4: {
+      primary: blendHex('#7ab8d4', targetColor.primary, 0.9),
+      glow: targetColor.glow,
+      bg: blendHex('#060810', targetColor.bg, 0.8),
+    },
+    5: targetColor,
+  }
+  const currentColor = colorByPhase[safePhase] ?? colorByPhase[0]
+  const cssVars = {
+    '--mc': currentColor.primary,
+    '--mc-glow': currentColor.glow,
+    '--mc-bg': currentColor.bg,
+  }
+
   const showParticles = phase >= 1 && phase <= 3
 
   const wrapClass = [
@@ -396,9 +462,19 @@ function AwakeningOverlay({ phase, jobTitleClass, jobName }) {
       </div>
 
       <div className="forge-status-text">
-        {phase < 5 ? (
+        {phase === 0 && <span style={{ display: 'block', minHeight: '72px' }} />}
+
+        {phase >= 1 && phase <= 3 && (
           <span className="forge-charging-text">이능력 각성 중...</span>
-        ) : (
+        )}
+
+        {phase === 4 && (
+          <span className="forge-charging-text forge-charging-text--critical">
+            임계점 돌파 중...
+          </span>
+        )}
+
+        {phase === 5 && (
           <div className="forge-complete-block">
             <span className={`forge-class-name ${jobTitleClass || ''}`}>{jobName}</span>
             <span className="forge-complete-label">각성 완료</span>
