@@ -370,7 +370,7 @@ function ResultScreen({ result, onRestart, responseId = null }) {
               이세계의 모든 운명
             </p>
             <h2 id="joblist-modal-title" className="fantasy-joblist-modal__title">
-              20가지 직업 일람
+              20가지 직업 보기
             </h2>
 
             <div className="fantasy-joblist-modal__grid">
