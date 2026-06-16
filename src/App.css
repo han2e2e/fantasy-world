@@ -1254,25 +1254,28 @@ body,
   box-shadow: none !important;
 }
 
-.fantasy-btn--option:hover:not(:disabled),
-.fantasy-btn--option:focus-visible:not(:disabled),
-.fantasy-btn--option.fantasy-btn--glow:hover:not(:disabled) {
-  background: rgba(232, 201, 106, 0.1) !important;
-  color: #fffdf5 !important;
-  -webkit-text-fill-color: #fffdf5 !important;
-  border-color: #e8c96a !important;
-  text-shadow: 0 0 10px rgba(232, 201, 106, 0.45) !important;
-  box-shadow:
-    0 0 22px rgba(232, 201, 106, 0.28),
-    inset 0 0 34px rgba(232, 201, 106, 0.06) !important;
-  transform: translateX(4px) !important;
-}
+/* 호버 효과는 마우스가 있는 기기(PC)에서만 — 모바일 탭 후 불빛 잔류 방지 */
+@media (hover: hover) and (pointer: fine) {
+  .fantasy-btn--option:hover:not(:disabled),
+  .fantasy-btn--option:focus-visible:not(:disabled),
+  .fantasy-btn--option.fantasy-btn--glow:hover:not(:disabled) {
+    background: rgba(232, 201, 106, 0.1) !important;
+    color: #fffdf5 !important;
+    -webkit-text-fill-color: #fffdf5 !important;
+    border-color: #e8c96a !important;
+    text-shadow: 0 0 10px rgba(232, 201, 106, 0.45) !important;
+    box-shadow:
+      0 0 22px rgba(232, 201, 106, 0.28),
+      inset 0 0 34px rgba(232, 201, 106, 0.06) !important;
+    transform: translateX(4px) !important;
+  }
 
-.fantasy-btn--option:hover:not(:disabled) .fantasy-quiz__option-text::first-letter,
-.fantasy-btn--option:focus-visible:not(:disabled) .fantasy-quiz__option-text::first-letter {
-  color: #ffe9a8;
-  -webkit-text-fill-color: #ffe9a8;
-  text-shadow: 0 0 12px rgba(232, 201, 106, 0.6);
+  .fantasy-btn--option:hover:not(:disabled) .fantasy-quiz__option-text::first-letter,
+  .fantasy-btn--option:focus-visible:not(:disabled) .fantasy-quiz__option-text::first-letter {
+    color: #ffe9a8;
+    -webkit-text-fill-color: #ffe9a8;
+    text-shadow: 0 0 12px rgba(232, 201, 106, 0.6);
+  }
 }
 
 .fantasy-btn--option:active {
@@ -1318,18 +1321,21 @@ body,
   border-radius: 50%;
 }
 
-.fantasy-btn--glow:hover::before {
-  width: 300px;
-  height: 300px;
-}
+/* 글로우 버튼 호버도 마우스 기기에서만 (모바일 탭 후 불빛 잔류 방지) */
+@media (hover: hover) and (pointer: fine) {
+  .fantasy-btn--glow:hover::before {
+    width: 300px;
+    height: 300px;
+  }
 
-.fantasy-btn--glow:hover:not(:disabled) {
-  border-color: #f5c842;
-  box-shadow: 0 0 24px rgba(245, 200, 66, 0.5);
-  background: rgba(232, 201, 106, 0.14);
-  color: #fff9e6;
-  -webkit-text-fill-color: #fff9e6;
-  transform: translateY(-2px);
+  .fantasy-btn--glow:hover:not(:disabled) {
+    border-color: #f5c842;
+    box-shadow: 0 0 24px rgba(245, 200, 66, 0.5);
+    background: rgba(232, 201, 106, 0.14);
+    color: #fff9e6;
+    -webkit-text-fill-color: #fff9e6;
+    transform: translateY(-2px);
+  }
 }
 
 .fantasy-quiz {
