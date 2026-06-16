@@ -3458,25 +3458,43 @@ body,
 
 .fantasy-review-modal__item {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: flex-start;
+  gap: 6px;
   margin: 0;
   font-family: 'Noto Serif KR', serif;
   font-size: 0.9rem;
+  line-height: 1.6;
   color: rgba(220, 214, 235, 0.9);
 }
 
-/* 닉네임:댓글 — 한 줄 유지, 길면 말줄임 */
-.fantasy-review-modal__item-main {
-  flex: 1 1 auto;
+/* 닉네임 — 가장 긴 직업명 기준 고정폭 → 모든 줄의 댓글 시작점 정렬 */
+.fantasy-review-modal__item-nick {
+  flex: 0 0 8.5em;
   min-width: 0;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  font-weight: 600;
+  color: rgba(250, 204, 21, 0.85);
   text-align: left;
 }
 
-/* 삭제 버튼 + 날짜 — 항상 우측에 일정하게 정렬 */
+.fantasy-review-modal__item-sep {
+  flex: 0 0 auto;
+  color: rgba(180, 175, 200, 0.5);
+}
+
+/* 댓글 — 남은 공간에서 줄바꿈, 2줄 이상이면 댓글 시작점에서 다음 줄로 */
+.fantasy-review-modal__item-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  color: rgba(220, 214, 235, 0.9);
+}
+
+/* 삭제 버튼 + 날짜 — 우측 상단 고정 정렬 */
 .fantasy-review-modal__item-meta {
   flex: 0 0 auto;
   display: flex;

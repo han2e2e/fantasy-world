@@ -475,14 +475,12 @@ function ResultScreen({ result, onRestart, responseId = null }) {
                     key={review.id}
                     className="fantasy-review-modal__item leading-relaxed tracking-wide"
                   >
-                    <span className="fantasy-review-modal__item-main">
-                      <span className="fantasy-review-modal__item-nick">
-                        {review.nickname}
-                      </span>
-                      <span className="fantasy-review-modal__item-sep"> : </span>
-                      <span className="fantasy-review-modal__item-text">
-                        {review.comment}
-                      </span>
+                    <span className="fantasy-review-modal__item-nick">
+                      {review.nickname}
+                    </span>
+                    <span className="fantasy-review-modal__item-sep">:</span>
+                    <span className="fantasy-review-modal__item-text">
+                      {review.comment}
                     </span>
 
                     <span className="fantasy-review-modal__item-meta">
