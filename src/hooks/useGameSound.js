@@ -68,46 +68,71 @@ export function useGameSound() {
     mid.stop(t + 0.9)
   }, [getCtx])
 
-  // Phase 1~3: 망치 단조음 (호출마다 약간 다른 주파수)
+  // Phase 1~3: 모루 망치 타격음 "땅!" (탁 + 금속 울림 + 저역 펀치)
   const playHammerSound = useCallback(() => {
     const ctx = getCtx()
     if (!ctx) return
     const t = ctx.currentTime
-    const freq = 160 + Math.random() * 40
 
-    const impact = ctx.createOscillator()
-    const impactGain = ctx.createGain()
-    impact.connect(impactGain)
-    impactGain.connect(ctx.destination)
-    impact.type = 'sawtooth'
-    impact.frequency.setValueAtTime(freq, t)
-    impact.frequency.exponentialRampToValueAtTime(freq * 0.4, t + 0.18)
-    impactGain.gain.setValueAtTime(0.85, t)
-    impactGain.gain.exponentialRampToValueAtTime(0.001, t + 0.22)
-    impact.start(t)
-    impact.stop(t + 0.22)
-
-    const bufferSize = Math.max(1, Math.floor(ctx.sampleRate * 0.08))
+    // 1) 타격 트랜지언트 — 짧고 단단한 "탁" (고역 노이즈)
+    const noiseDuration = 0.05
+    const bufferSize = Math.max(1, Math.floor(ctx.sampleRate * noiseDuration))
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate)
     const data = buffer.getChannelData(0)
-    for (let i = 0; i < bufferSize; i += 1) data[i] = Math.random() * 2 - 1
+    for (let i = 0; i < bufferSize; i += 1) {
+      // 뒤로 갈수록 감쇠하는 노이즈
+      data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize)
+    }
     const noise = ctx.createBufferSource()
     noise.buffer = buffer
-    const noiseFilter = ctx.createBiquadFilter()
-    noiseFilter.type = 'bandpass'
-    noiseFilter.frequency.value = 800
-    noiseFilter.Q.value = 0.8
+    const noiseHP = ctx.createBiquadFilter()
+    noiseHP.type = 'highpass'
+    noiseHP.frequency.value = 1600
     const noiseGain = ctx.createGain()
-    noise.connect(noiseFilter)
-    noiseFilter.connect(noiseGain)
+    noiseGain.gain.setValueAtTime(0.5, t)
+    noiseGain.gain.exponentialRampToValueAtTime(0.0008, t + noiseDuration)
+    noise.connect(noiseHP)
+    noiseHP.connect(noiseGain)
     noiseGain.connect(ctx.destination)
-    noiseGain.gain.setValueAtTime(0.6, t)
-    noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.09)
     noise.start(t)
-    noise.stop(t + 0.09)
+    noise.stop(t + noiseDuration)
+
+    // 2) 금속 울림 "팅" — 비배음 파셜 3개, 빠른 감쇠
+    const detune = 0.97 + Math.random() * 0.06
+    const partials = [
+      { f: 524, peak: 0.5, dur: 0.24 },
+      { f: 1190, peak: 0.24, dur: 0.16 },
+      { f: 2380, peak: 0.14, dur: 0.1 },
+    ]
+    partials.forEach(({ f, peak, dur }) => {
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.type = 'triangle'
+      osc.frequency.setValueAtTime(f * detune, t)
+      gain.gain.setValueAtTime(0.0001, t)
+      gain.gain.linearRampToValueAtTime(peak, t + 0.004)
+      gain.gain.exponentialRampToValueAtTime(0.0008, t + dur)
+      osc.connect(gain)
+      gain.connect(ctx.destination)
+      osc.start(t)
+      osc.stop(t + dur + 0.02)
+    })
+
+    // 3) 저역 펀치 "쿵" — 무게감
+    const thump = ctx.createOscillator()
+    const thumpGain = ctx.createGain()
+    thump.type = 'sine'
+    thump.frequency.setValueAtTime(125, t)
+    thump.frequency.exponentialRampToValueAtTime(60, t + 0.09)
+    thumpGain.gain.setValueAtTime(0.5, t)
+    thumpGain.gain.exponentialRampToValueAtTime(0.001, t + 0.12)
+    thump.connect(thumpGain)
+    thumpGain.connect(ctx.destination)
+    thump.start(t)
+    thump.stop(t + 0.13)
 
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
-      navigator.vibrate(60)
+      navigator.vibrate(45)
     }
   }, [getCtx])
 
