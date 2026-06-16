@@ -11,6 +11,17 @@ import JobTitleDisplay from './JobTitleDisplay'
 const REVIEWS_PER_PAGE = 5
 const MY_REVIEWS_STORAGE_KEY = 'isekai_guestbook_my_ids'
 
+// 작성일을 YYYY.MM.DD 형식으로 포맷
+function formatReviewDate(value) {
+  if (!value) return ''
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return ''
+  const yyyy = date.getFullYear()
+  const mm = String(date.getMonth() + 1).padStart(2, '0')
+  const dd = String(date.getDate()).padStart(2, '0')
+  return `${yyyy}.${mm}.${dd}`
+}
+
 function readMyReviewIds() {
   try {
     const raw = localStorage.getItem(MY_REVIEWS_STORAGE_KEY)
@@ -480,6 +491,11 @@ function ResultScreen({ result, onRestart, responseId = null }) {
                       >
                         삭제
                       </button>
+                    )}
+                    {formatReviewDate(review.created_at) && (
+                      <span className="fantasy-review-modal__item-date">
+                        {formatReviewDate(review.created_at)}
+                      </span>
                     )}
                   </p>
                 ))

@@ -3496,6 +3496,14 @@ body,
   color: rgba(220, 214, 235, 0.9);
 }
 
+.fantasy-review-modal__item-date {
+  margin-left: 8px;
+  font-size: 0.74rem;
+  letter-spacing: 0.02em;
+  color: rgba(180, 175, 200, 0.55);
+  white-space: nowrap;
+}
+
 .fantasy-review-modal__delete {
   margin-left: 8px;
   padding: 1px 8px;
