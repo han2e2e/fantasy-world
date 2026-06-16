@@ -3363,6 +3363,30 @@ body,
   transform: scale(1.05);
 }
 
+/* 모바일: 떠있는 고정 배치 해제 → 페이지 최하단 중앙 footer로 자연스럽게 흐르게 */
+@media (max-width: 768px) {
+  .fantasy-author-credit {
+    position: static;
+    display: block;
+    width: 100%;
+    right: auto;
+    bottom: auto;
+    z-index: auto;
+    margin: 0;
+    padding: 18px 12px 22px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    color: rgba(206, 200, 220, 0.4);
+    text-shadow: none;
+  }
+
+  .fantasy-author-credit--clickable:hover {
+    transform: none;
+  }
+}
+
 .fantasy-comment-modal {
   z-index: 1220;
 }
