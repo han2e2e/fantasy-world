@@ -471,33 +471,36 @@ function ResultScreen({ result, onRestart, responseId = null }) {
                 </p>
               ) : (
                 pagedReviews.map((review) => (
-                  <p
+                  <div
                     key={review.id}
-                    className="fantasy-review-modal__item leading-relaxed tracking-wide text-left"
+                    className="fantasy-review-modal__item leading-relaxed tracking-wide"
                   >
-                    <span className="fantasy-review-modal__item-nick">
-                      {review.nickname}
+                    <span className="fantasy-review-modal__item-main">
+                      <span className="fantasy-review-modal__item-nick">
+                        {review.nickname}
+                      </span>
+                      <span className="fantasy-review-modal__item-sep"> : </span>
+                      <span className="fantasy-review-modal__item-text">
+                        {review.comment}
+                      </span>
                     </span>
-                    <span className="fantasy-review-modal__item-sep"> : </span>
-                    <span className="fantasy-review-modal__item-text">
-                      {review.comment}
-                    </span>
-                    {myReviewIds.includes(review.id) && (
-                      <button
-                        type="button"
-                        className="fantasy-review-modal__delete"
-                        aria-label="내 후기 삭제"
-                        onClick={() => handleDeleteReview(review.id)}
-                      >
-                        삭제
-                      </button>
-                    )}
-                    {formatReviewDate(review.created_at) && (
+
+                    <span className="fantasy-review-modal__item-meta">
+                      {myReviewIds.includes(review.id) && (
+                        <button
+                          type="button"
+                          className="fantasy-review-modal__delete"
+                          aria-label="내 후기 삭제"
+                          onClick={() => handleDeleteReview(review.id)}
+                        >
+                          삭제
+                        </button>
+                      )}
                       <span className="fantasy-review-modal__item-date">
                         {formatReviewDate(review.created_at)}
                       </span>
-                    )}
-                  </p>
+                    </span>
+                  </div>
                 ))
               )}
             </div>

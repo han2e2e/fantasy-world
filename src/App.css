@@ -3451,11 +3451,32 @@ body,
 }
 
 .fantasy-review-modal__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin: 0;
   font-family: 'Noto Serif KR', serif;
   font-size: 0.9rem;
   color: rgba(220, 214, 235, 0.9);
-  word-break: break-word;
+}
+
+/* 닉네임:댓글 — 한 줄 유지, 길면 말줄임 */
+.fantasy-review-modal__item-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+/* 삭제 버튼 + 날짜 — 항상 우측에 일정하게 정렬 */
+.fantasy-review-modal__item-meta {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
 }
 
 .fantasy-review-modal__item-nick {
@@ -3497,7 +3518,9 @@ body,
 }
 
 .fantasy-review-modal__item-date {
-  margin-left: 8px;
+  flex: 0 0 auto;
+  width: 5.2em;
+  text-align: right;
   font-size: 0.74rem;
   letter-spacing: 0.02em;
   color: rgba(180, 175, 200, 0.55);
@@ -3505,7 +3528,7 @@ body,
 }
 
 .fantasy-review-modal__delete {
-  margin-left: 8px;
+  flex: 0 0 auto;
   padding: 1px 8px;
   border: 1px solid rgba(255, 107, 129, 0.45);
   border-radius: 6px;
