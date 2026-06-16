@@ -472,30 +472,32 @@ function App() {
     // 히든 클래스(17~20)는 망치 5타 + 강화 연출 (총 3200ms)
     const isHiddenClass = getJobTitleClass(jobKey).includes('hidden')
 
+    // 긴장감 빌드업: 일반 직업 약 3.4초 연성 시퀀스
     const normalSchedule = [
       [0, () => { setAwakeningPhase(0); playBoomSound() }],
-      [300, () => { setAwakeningPhase(1); playHammerSound() }],
-      [700, () => { setAwakeningPhase(2); playHammerSound() }],
-      [1100, () => { setAwakeningPhase(3); playHammerSound() }],
-      [1600, () => { setAwakeningPhase(4) }],
-      [2400, () => { setAwakeningPhase(5); playCompleteSound() }],
-      [3000, () => {
+      [450, () => { setAwakeningPhase(1); playHammerSound() }],
+      [1000, () => { setAwakeningPhase(2); playHammerSound() }],
+      [1550, () => { setAwakeningPhase(3); playHammerSound() }],
+      [2250, () => { setAwakeningPhase(4) }],
+      [2850, () => { setAwakeningPhase(5); playCompleteSound() }],
+      [3400, () => {
         setIsAwakening(false)
         setAwakeningPhase(0)
         goToScreen(SCREENS.RESULT)
       }],
     ]
 
+    // 히든 직업(17~20)은 망치 5타 + 강화 연출, 약 3.7초
     const hiddenSchedule = [
       [0, () => { setAwakeningPhase(0); playBoomSound() }],
-      [200, () => { setAwakeningPhase(1); playHammerSound() }],
-      [500, () => { setAwakeningPhase(2); playHammerSound() }],
-      [800, () => { setAwakeningPhase(3); playHammerSound() }],
-      [1000, () => { setAwakeningPhase(2); playHammerSound() }],
-      [1300, () => { setAwakeningPhase(3); playHammerSound() }],
-      [1700, () => { setAwakeningPhase(4) }],
-      [2300, () => { setAwakeningPhase(5); playCompleteSound() }],
-      [3200, () => {
+      [400, () => { setAwakeningPhase(1); playHammerSound() }],
+      [800, () => { setAwakeningPhase(2); playHammerSound() }],
+      [1200, () => { setAwakeningPhase(3); playHammerSound() }],
+      [1600, () => { setAwakeningPhase(2); playHammerSound() }],
+      [2050, () => { setAwakeningPhase(3); playHammerSound() }],
+      [2550, () => { setAwakeningPhase(4) }],
+      [3150, () => { setAwakeningPhase(5); playCompleteSound() }],
+      [3700, () => {
         setIsAwakening(false)
         setAwakeningPhase(0)
         goToScreen(SCREENS.RESULT)

@@ -3459,23 +3459,24 @@ body,
   transform: scale(1.05);
 }
 
-/* 모바일: 떠있는 고정 배치 해제 → 페이지 최하단 중앙 footer로 자연스럽게 흐르게 */
+/* 모바일: PC처럼 우측 하단 고정 유지하되, 하단 내비/툴바에 가리지 않게 safe-area 확보 */
 @media (max-width: 768px) {
   .fantasy-author-credit {
-    position: static;
-    display: block;
-    width: 100%;
-    right: auto;
-    bottom: auto;
-    z-index: auto;
+    position: fixed;
+    right: 12px;
+    /* 모바일 하단 툴바/제스처 바 영역 회피 */
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    left: auto;
+    width: auto;
+    z-index: 9998;
     margin: 0;
-    padding: 18px 12px 22px;
-    text-align: center;
+    padding: 3px 7px;
+    text-align: right;
     font-size: 11px;
-    font-weight: 400;
-    letter-spacing: 0.06em;
-    color: rgba(206, 200, 220, 0.4);
-    text-shadow: none;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: rgba(232, 201, 106, 0.78);
+    text-shadow: 0 0 6px rgba(0, 0, 0, 0.85);
   }
 
   .fantasy-author-credit--clickable:hover {
@@ -4018,6 +4019,13 @@ body,
   to   { transform: scale(1.02); }
 }
 
+/* 연성 완료 직전: 마법진이 거대해지며 빛이 확 뿜어져 나오는 스케일 버스트 */
+@keyframes forge-circle-burst {
+  0%   { transform: scale(1.02); }
+  45%  { transform: scale(1.32); }
+  100% { transform: scale(1.18); }
+}
+
 .forge-particles {
   position: absolute;
   inset: 0;
@@ -4115,13 +4123,50 @@ body,
 }
 
 .forge-status-text {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.4em;
   font-family: 'Noto Serif KR', serif;
-  font-size: 0.78rem;
-  font-weight: 300;
-  letter-spacing: 0.4em;
-  color: rgba(200, 180, 230, 0.55);
-  text-indent: 0.4em;
-  min-height: 1.2em;
+  text-align: center;
+}
+
+/* 연성 중: 크고 은은하게 펄스(페이드 인/아웃)되는 멘트 */
+.forge-status-text__charging {
+  font-size: clamp(1.05rem, 3.5vw, 1.5rem);
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-indent: 0.25em;
+  color: rgba(232, 222, 250, 0.92);
+  text-shadow: 0 0 16px var(--forge-glow, rgba(245, 200, 66, 0.5));
+  animation: forge-text-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes forge-text-pulse {
+  0%   { opacity: 0.35; transform: scale(0.98); }
+  50%  { opacity: 1;    transform: scale(1.02); }
+  100% { opacity: 0.35; transform: scale(0.98); }
+}
+
+/* 연성 완료: 쾅! 하고 화면을 압도하는 대형 볼드 마크 */
+.forge-status-text__complete {
+  font-size: clamp(1.7rem, 7vw, 2.6rem);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: var(--forge-primary, #f5c842);
+  text-shadow:
+    0 0 18px var(--forge-glow, rgba(245, 200, 66, 0.8)),
+    0 0 44px var(--forge-shadow, rgba(245, 200, 66, 0.4));
+  word-break: keep-all;
+  padding: 0 16px;
+  animation: forge-text-slam 0.55s cubic-bezier(0.2, 0.9, 0.25, 1.5) forwards;
+}
+
+@keyframes forge-text-slam {
+  0%   { opacity: 0; transform: scale(2.1); filter: blur(6px); }
+  55%  { opacity: 1; transform: scale(0.94); filter: blur(0); }
+  100% { opacity: 1; transform: scale(1); }
 }
 
 @media (max-width: 480px) {

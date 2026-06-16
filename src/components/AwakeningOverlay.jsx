@@ -95,21 +95,27 @@ function MagicCircleSVG({ phase, color }) {
         </filter>
       </defs>
 
-      {dotPositions.map((pos, i) => (
-        <circle
-          key={i}
-          cx={pos.cx}
-          cy={pos.cy}
-          r={2}
-          fill={color.primary}
-          opacity={phase >= 1 ? 0.5 : 0}
-          style={{ transition: `opacity 0.4s ease ${i * 0.02}s` }}
-          filter="url(#forge-glow-filter)"
-        />
-      ))}
-
-      {/* 외곽 원 (Phase 1) */}
-      <circle cx={C} cy={C} r={r1} style={arcStyle1} filter="url(#forge-glow-filter)" />
+      {/* 외곽 궤도 (Phase 1) — 정방향 느린 회전 */}
+      <g
+        style={{
+          transformOrigin: `${C}px ${C}px`,
+          animation: phase >= 1 ? 'forge-ring-spin-cw 22s linear infinite' : 'none',
+        }}
+      >
+        {dotPositions.map((pos, i) => (
+          <circle
+            key={i}
+            cx={pos.cx}
+            cy={pos.cy}
+            r={2}
+            fill={color.primary}
+            opacity={phase >= 1 ? 0.5 : 0}
+            style={{ transition: `opacity 0.4s ease ${i * 0.02}s` }}
+            filter="url(#forge-glow-filter)"
+          />
+        ))}
+        <circle cx={C} cy={C} r={r1} style={arcStyle1} filter="url(#forge-glow-filter)" />
+      </g>
 
       {/* 중간 원 (Phase 2) — 반대 방향 회전 */}
       <g
@@ -135,24 +141,29 @@ function MagicCircleSVG({ phase, color }) {
           })}
       </g>
 
-      {/* 내부 원 (Phase 3) */}
-      <circle cx={C} cy={C} r={r3} style={arcStyle3} filter="url(#forge-glow-filter)" />
-
-      {/* 룬 방사선 (Phase 3) */}
-      {runeLines.map((line, i) => (
-        <line
-          key={i}
-          x1={line.x1}
-          y1={line.y1}
-          x2={line.x2}
-          y2={line.y2}
-          stroke={color.primary}
-          strokeWidth={1}
-          opacity={phase >= 3 ? 0.7 : 0}
-          style={{ transition: `opacity 0.3s ease ${i * 0.05}s` }}
-          filter="url(#forge-glow-filter)"
-        />
-      ))}
+      {/* 내부 원 + 룬 (Phase 3) — 빠른 정방향 회전 */}
+      <g
+        style={{
+          transformOrigin: `${C}px ${C}px`,
+          animation: phase >= 3 ? 'forge-ring-spin-cw 8s linear infinite' : 'none',
+        }}
+      >
+        <circle cx={C} cy={C} r={r3} style={arcStyle3} filter="url(#forge-glow-filter)" />
+        {runeLines.map((line, i) => (
+          <line
+            key={i}
+            x1={line.x1}
+            y1={line.y1}
+            x2={line.x2}
+            y2={line.y2}
+            stroke={color.primary}
+            strokeWidth={1}
+            opacity={phase >= 3 ? 0.7 : 0}
+            style={{ transition: `opacity 0.3s ease ${i * 0.05}s` }}
+            filter="url(#forge-glow-filter)"
+          />
+        ))}
+      </g>
 
       {/* 중심 코어 (Phase 3) */}
       <circle
@@ -216,19 +227,21 @@ function AwakeningOverlay({ phase, jobTitleClass }) {
       )}
 
       <div
-        className="forge-circle-wrap"
+        className={`forge-circle-wrap ${phase >= 5 ? 'forge-circle-wrap--burst' : ''}`}
         style={{
           filter:
             phase >= 5
-              ? `drop-shadow(0 0 40px ${color.glow}) drop-shadow(0 0 80px ${color.shadow})`
+              ? `drop-shadow(0 0 25px ${color.glow}) drop-shadow(0 0 60px ${color.glow}) drop-shadow(0 0 110px ${color.shadow})`
               : phase >= 3
-                ? `drop-shadow(0 0 20px ${color.glow})`
-                : 'none',
-          transition: 'filter 0.6s ease',
+                ? `drop-shadow(0 0 18px ${color.glow}) drop-shadow(0 0 40px ${color.shadow})`
+                : `drop-shadow(0 0 12px ${color.shadow})`,
+          transition: 'filter 0.5s ease',
           animation:
-            phase >= 3 && phase < 5
-              ? 'forge-circle-breathe 2s ease-in-out infinite alternate'
-              : 'none',
+            phase >= 5
+              ? 'forge-circle-burst 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.4) forwards'
+              : phase >= 3 && phase < 5
+                ? 'forge-circle-breathe 2s ease-in-out infinite alternate'
+                : 'none',
         }}
       >
         <MagicCircleSVG phase={phase} color={color} />
@@ -237,10 +250,16 @@ function AwakeningOverlay({ phase, jobTitleClass }) {
       <div className={`forge-flash ${phase >= 5 ? 'forge-flash--active' : ''}`} />
 
       <div className="forge-status-text">
-        {phase === 0 && <span>이능력을 불러오는 중...</span>}
-        {phase >= 1 && phase <= 3 && <span>연성 중 {phase}/3</span>}
-        {phase === 4 && <span>각성 완료</span>}
-        {phase >= 5 && <span>이능력이 부여되었습니다</span>}
+        {phase >= 0 && phase <= 4 && (
+          <span className="forge-status-text__charging">
+            이능력을 부여 중입니다...
+          </span>
+        )}
+        {phase >= 5 && (
+          <span className="forge-status-text__complete">
+            이능력이 부여되었습니다!
+          </span>
+        )}
       </div>
     </div>
   )
