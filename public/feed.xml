@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>이능력판정소</title>
+    <link>https://ability-world.vercel.app/</link>
+    <description>성향으로 알아보는 나의 이세계 이능력 — 10문항 성향 테스트로 20가지 판타지 직업 중 운명을 진단합니다.</description>
+    <language>ko</language>
+    <item>
+      <title>이능력판정소 — 성향으로 알아보는 이세계 이능력 테스트</title>
+      <link>https://ability-world.vercel.app/</link>
+      <description>이능력판정소에서 10가지 질문으로 나의 이세계 이능력을 진단하세요. 전투·전략·생존·현대 성향을 분석해 20가지 판타지 직업 중 당신만의 이능력과 운명을 찾아주는 무료 성향 테스트입니다. 성향으로 알아보는 나의 이세계 이능력 — 10가지 질문으로 전투·전략·생존·현대 성향을 분석하고, 20가지 판타지 직업 중 당신만의 이능력과 운명을 찾아주는 무료 성향 테스트입니다.</description>
+      <pubDate>Tue, 17 Jun 2026 00:00:00 +0900</pubDate>
+      <guid isPermaLink="true">https://ability-world.vercel.app/</guid>
+    </item>
+  </channel>
+</rss>
