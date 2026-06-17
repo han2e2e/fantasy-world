@@ -3,37 +3,43 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/og-image.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0a0612" />
+    <meta name="application-name" content="이능력판정소" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&display=swap"
       rel="stylesheet"
     />
-    <title>이능력판정소 — 성향으로 알아보는 나의 이세계 이능력</title>
+
+    <!-- 검색 결과 제목 (네이버·구글) — 브랜드명 선행 -->
+    <title>이능력판정소 — 성향으로 알아보는 이세계 이능력 테스트</title>
     <meta
       name="description"
-      content="10가지 질문으로 알아보는 나의 이세계 이능력! 전투·전략·생존·현대 성향을 분석해 20가지 직업 중 당신의 운명을 찾아드립니다."
+      content="이능력판정소에서 10가지 질문으로 나의 이세계 이능력을 진단하세요. 전투·전략·생존·현대 성향 분석 후 20가지 판타지 직업 중 당신만의 운명을 찾아드립니다. 무료 심리테스트."
     />
     <meta
       name="keywords"
-      content="이능력판정소, 이세계, 이능력, 성향테스트, 심리테스트, 직업테스트, 판타지, 퀴즈, MBTI"
+      content="이능력판정소, 이세계, 이능력, 이세계 이능력, 성향테스트, 심리테스트, 직업테스트, 판타지, 퀴즈, MBTI, 이능력 찾기"
     />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
     <meta name="author" content="이한" />
     <link rel="canonical" href="https://ability-world.vercel.app/" />
     <meta name="naver-site-verification" content="587f06b26ce5713ce3e7341eb5db7c4d48a39dca" />
 
-    <!-- Open Graph (카카오톡 / 페이스북 / 디스코드 등 링크 미리보기) -->
+    <!-- Open Graph (네이버·카카오·페이스북 링크 미리보기) -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="이능력판정소" />
-    <meta property="og:title" content="*+:｡ 이능력판정소 ｡:+*" />
+    <meta property="og:title" content="이능력판정소 — 성향으로 알아보는 나의 이세계 이능력" />
     <meta
       property="og:description"
-      content="성향으로 알아보는 나의 이세계 이능력 찾아보기!"
+      content="10가지 질문으로 나의 이세계 이능력을 진단하세요. 전투·전략·생존 성향 분석 → 20가지 판타지 직업 중 당신의 운명을 찾아드립니다."
     />
     <meta property="og:url" content="https://ability-world.vercel.app/" />
     <meta property="og:image" content="https://ability-world.vercel.app/og-image.png" />
+    <meta property="og:image:alt" content="이능력판정소 — 성향으로 알아보는 이세계 이능력 찾기" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -41,33 +47,102 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="*+:｡ 이능력판정소 ｡:+*" />
+    <meta name="twitter:title" content="이능력판정소 — 성향으로 알아보는 나의 이세계 이능력" />
     <meta
       name="twitter:description"
-      content="성향으로 알아보는 나의 이세계 이능력 찾아보기!"
+      content="10가지 질문으로 나의 이세계 이능력을 진단하세요. 20가지 판타지 직업 중 당신의 운명을 찾아드립니다."
     />
     <meta name="twitter:image" content="https://ability-world.vercel.app/og-image.png" />
+    <meta name="twitter:image:alt" content="이능력판정소 — 성향으로 알아보는 이세계 이능력 찾기" />
 
-    <!-- 구조화 데이터 (검색엔진 이해도 향상) -->
+    <!-- 구조화 데이터 (검색엔진·AI 검색 이해도 향상) -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "이능력판정소",
-        "alternateName": "Isekai Ability Quiz",
-        "url": "https://ability-world.vercel.app/",
-        "description": "성향으로 알아보는 나의 이세계 이능력 찾기 — 10문답으로 20가지 직업 중 운명을 진단합니다.",
-        "inLanguage": "ko"
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://ability-world.vercel.app/#website",
+            "name": "이능력판정소",
+            "alternateName": ["이세계 이능력 테스트", "Isekai Ability Quiz"],
+            "url": "https://ability-world.vercel.app/",
+            "description": "성향으로 알아보는 나의 이세계 이능력 — 10문항 성향 테스트로 20가지 판타지 직업 중 운명을 진단합니다.",
+            "inLanguage": "ko",
+            "publisher": {
+              "@type": "Person",
+              "name": "이한"
+            }
+          },
+          {
+            "@type": "WebApplication",
+            "@id": "https://ability-world.vercel.app/#app",
+            "name": "이능력판정소",
+            "url": "https://ability-world.vercel.app/",
+            "description": "10가지 질문으로 전투·전략·생존·현대 성향을 분석해 20가지 이세계 직업 중 당신의 이능력과 운명을 찾아주는 무료 판타지 성향 테스트.",
+            "applicationCategory": "GameApplication",
+            "operatingSystem": "Web Browser",
+            "browserRequirements": "Requires JavaScript",
+            "image": "https://ability-world.vercel.app/og-image.png",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "KRW"
+            },
+            "isPartOf": {
+              "@id": "https://ability-world.vercel.app/#website"
+            }
+          }
+        ]
       }
     </script>
+
+    <style>
+      #seo-fallback {
+        min-height: 100vh;
+        margin: 0;
+        background: #0a0612;
+        color: #e8c96a;
+        font-family: 'Noto Serif KR', serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+        box-sizing: border-box;
+      }
+      #seo-fallback h1 {
+        margin: 0 0 0.75rem;
+        font-size: clamp(1.75rem, 5vw, 2.5rem);
+        font-weight: 900;
+        letter-spacing: 0.08em;
+      }
+      #seo-fallback p {
+        margin: 0;
+        max-width: 36rem;
+        line-height: 1.7;
+        color: #c8b8e0;
+        font-size: 1rem;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <main id="seo-fallback" lang="ko">
+        <h1>이능력판정소</h1>
+        <p>
+          성향으로 알아보는 나의 이세계 이능력 — 10가지 질문으로 전투·전략·생존·현대
+          성향을 분석하고, 20가지 판타지 직업 중 당신만의 이능력과 운명을 찾아주는 무료
+          성향 테스트입니다.
+        </p>
+      </main>
+    </div>
     <noscript>
       <h1>이능력판정소 — 성향으로 알아보는 나의 이세계 이능력</h1>
       <p>
-        10가지 질문으로 전투·전략·생존·현대 성향을 분석해, 20가지 이세계 직업 중
-        당신의 이능력과 운명을 찾아주는 성향 테스트입니다.
+        이능력판정소에서 10가지 질문으로 나의 이세계 이능력을 진단하세요. 전투·전략·생존·현대
+        성향을 분석해 20가지 판타지 직업 중 당신만의 이능력과 운명을 찾아주는 무료 성향
+        테스트입니다.
       </p>
     </noscript>
     <script type="module" src="/src/main.jsx"></script>
